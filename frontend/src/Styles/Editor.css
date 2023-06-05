@@ -1,0 +1,36 @@
+.editor-react {
+    padding: 5%;
+  }
+  
+  .container {
+    text-align: center;
+  }
+  
+  .btn {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+  }
+  
+  h1{
+    text-align: center;
+  }
+
+  h2 {
+    text-align: center;
+
+  }
+
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+  
+  .rainbow-text {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, red, blue, indigo,  red,  blue, indigo);
+  }
