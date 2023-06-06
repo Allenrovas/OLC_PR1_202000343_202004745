@@ -9,17 +9,27 @@ function Analisis() {
 
   const changeText = (text) => {
     setValue(text);
+    console.log(text);
   }
 
   const handlerClick = () => {
-    Service.comando(value)
+
+    if (value === "") {
+      alert("No hay nada que analizar");
+      return;
+    }
+    Service.analisis(value)
     .then((respuesta) => {
-      setResponse(respuesta.respuesta);
+      alert(respuesta);
+      setResponse(respuesta);
       console.log(respuesta);
     })
   }
 
   const handlerLimpiar = () => {
+    if (value === "") {
+      return;
+    }
     setResponse("");
     changeText("");
   }
@@ -48,7 +58,7 @@ function Analisis() {
     <>
       <NavBar />
       <h1>Proyecto 1 - TypeCraft - 202000343 - 202004745</h1> 
-      <Consola text={"Consola Entrada"} handlerChange = {changeText} value ={value} rows={15} />
+      <Consola text={"Consola Entrada"} handlerChange = {changeText} value ={value}  />
       <div class ="container">
       <button type="button" class="btn btn-primary" onClick={handlerClick}>Ejecutar</button>
       <button type="button" class="btn btn-primary" onClick={handleLoadClick}>Cargar archivo</button>

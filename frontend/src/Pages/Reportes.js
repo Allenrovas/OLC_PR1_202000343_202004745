@@ -4,18 +4,25 @@ import Service from "../Services/Service.js";
 import Graphviz from "graphviz-react";
 
 function Reportes() {
-  const [response, setResponse] = React.useState("");
   const [graphCode, setGraphCode] = React.useState("");
   
   
   const handleGraphClick = (url) => {
     Service.imagen(url)
     .then((response) => {
+      
       setGraphCode(response.respuesta);
       console.log(response);
     
     })
     
+  }
+
+  const reportePrueba = () => {
+    Service.reportes()
+    .then((response) => {
+      alert(response);
+    })
   }
 
  
@@ -25,7 +32,7 @@ function Reportes() {
       <NavBar />
       <h1>Proyecto 1 - Reportes PyTypeCraft - OLC2 </h1>
       <div class ="container" >
-        <button type="button" class="btn btn-primary">Reporte de Errores</button>
+        <button onClick={reportePrueba} type="button" class="btn btn-primary">Reporte de Errores</button>
         <button type="button" class="btn btn-primary">Reporte de Tabla de Símbolos</button>
         <button type="button" class="btn btn-primary">Reporte de AST</button>
       </div>
