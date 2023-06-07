@@ -133,12 +133,12 @@ def t_ID(t):
 
 #Comentario de Una Linea
 def t_Com_Simple(t):
-    r'\#.*\n'
+    r'\/\/.*'
     t.lexer.lineno += 1
 
 #Comentario Multilinea
 def t_Com_Multiple(t):
-    r'\#=(.|\n)*?=\#'
+    r'\/\*(.|\n)*?\*\/'
     t.lexer.lineno += t.value.count('\n')
     
 #Nueva Linea

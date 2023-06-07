@@ -2,11 +2,15 @@
 import ply.yacc as yacc
 import ply.lex as lex
 from AnalizadorLexico import *
+from src.Expresiones.aritmetica import Aritmetica
+from src.Expresiones.primitivos import Primitivos
+from src.Instrucciones.imprimir import Imprimir
 
 precedence = (
     ('left','MAS','MENOS'),
     ('left','POR','DIV'),
     ('left','PARIZQ', 'PARDER'),
+    ('right','UMENOS'),
 )
 
 # Definicion de la Gramatica
@@ -28,13 +32,33 @@ def p_instrucciones_2(t):
         t[0] = [t[1]]
 
 def p_instrucciones_evaluar(t):
-    'instruccion : imprimir PTCOMA'
+    '''instruccion : imprimir PTCOMA
+                    | declaracion PTCOMA
+                    | condicional_if PTCOMA
+    '''
     t[0] = t[1]
 
 def p_imprimir(t):
     'imprimir : RCONSOLE PUNTO RLOG PARIZQ expresion PARDER'
-    print(t[5])
-    t[0] = t[5]
+    t[0] = Imprimir(t[5], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_declaracion(t):
+    'declaracion : RLET ID DOSPUNTOS tipo IGUAL expresion'
+    print('Variable:',t[2],'Tipo de dato:',t[4],'Expresion:',t[6])
+    t[0] = [t[2], t[4], t[6]]
+
+def p_condicional_if(t):
+    'condicional_if : RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER'
+    print('Expresion:',t[3])
+    t[0] = t[3]
+
+def p_tipo(t):
+    '''tipo : RSTRING
+            | RNUMBER
+            | RBOOLEAN'''
+    t[0] = t[1]
+
+
 
 def p_expresion_binaria(t):
     '''expresion : expresion MAS expresion
@@ -42,25 +66,38 @@ def p_expresion_binaria(t):
                 | expresion POR expresion
                 | expresion DIV expresion'''
     if t[2] == '+'  : 
-        t[0] = t[1] + t[3]
+        t[0] = Aritmetica(t[1], t[3], '+', t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '-':
-        t[0] = t[1] - t[3]
+        t[0] = Aritmetica(t[1], t[3], '-', t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '*': 
-        t[0] = t[1] * t[3]
+        t[0] = Aritmetica(t[1], t[3], '*', t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '/': 
-        t[0] = t[1] / t[3]
+        t[0] = Aritmetica(t[1], t[3], '/', t.lineno(2), find_column(input, t.slice[2]))
+
+def p_expresion_unaria(t):
+    'expresion : MENOS expresion %prec UMENOS'
+    t[0] = -t[2]
 
 def p_expresion_entero(t):
     'expresion : ENTERO'
-    t[0] = int(t[1])
+    t[0] = Primitivos('number',int(t[1]), t.lineno(1), find_column(input, t.slice[1]))
 
 def p_expresion_decimal(t):
     'expresion : DECIMAL'
-    t[0] = float(t[1])
+    t[0] = Primitivos('number',float(t[1]), t.lineno(1), find_column(input, t.slice[1]))
 
 def p_expresion_cadena(t):
     'expresion : CADENA'
-    t[0] = t[1]
+    t[0] = Primitivos('string',str(t[1]), t.lineno(1), find_column(input, t.slice[1]))
+
+
+def p_expresion_boolean(t):
+    '''expresion : RTRUE
+                | RFALSE'''
+    if t[1] == 'true':
+        t[0] = Primitivos('boolean', True, t.lineno(1), find_column(input, t.slice[1]))
+    else:
+        t[0] = Primitivos('boolean', False, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_error(t):
     print(" Error sintáctico en '%s'" % t.value)
@@ -77,7 +114,13 @@ def parse(inp):
     lexer.lineno = 1
     return parser.parse(inp)
 
-entrada = 'console.log(3*5-4*2);'
+entrada = '''
+console.log("Hola, estoy siendo interpretado");
+console.log(4+"Hola"); // No la camioneta vaconsole.log(4+2-6*3);
+console.log(4/0);
+'''
+
+
 def test_lexer(lexer):
     while True:
         tok = lexer.token()
@@ -85,5 +128,8 @@ def test_lexer(lexer):
             break  # No more input
         print(tok)
 
-
+'''
 instrucciones = parse(entrada)
+for instr in instrucciones:
+    instr.interpretar(None, None)*/
+    '''
