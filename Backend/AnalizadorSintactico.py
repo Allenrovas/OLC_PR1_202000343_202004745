@@ -46,11 +46,11 @@ def p_imprimir(t):
     t[0] = Imprimir(t[5], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_declaracion(t):
-    'declaracion : RLET ID DPUNTOS tipo IGUAL expresion'
+    'declaracion : RLET ID DOSPUNTOS tipo IGUAL expresion'
     t[0] = Declaracion_Variables(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_condicional_if(t):
-    'condicional_if : RIF PARI expresion PARD LLAVEIZQ LLAVEDER'
+    'condicional_if : RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER'
     print('Expresion:',t[3])
     t[0] = t[3]
 
@@ -121,16 +121,9 @@ def parse(inp):
     return parser.parse(inp)
 
 entrada = '''
-// Entorno Global
-let a = 10;
-
-// Entorno de Local
-if(true) {
-    a = 30;
-    console.log(a);
-}
-
-console.log(a);
+let a : number = 10;
+let b : number = a;
+console.log(b);
 '''
 
 

@@ -6,7 +6,6 @@ Unused terminals:
     CORDER
     CORIZQ
     DESIGUALDAD
-    DOSPUNTOS
     IGUALDAD
     MAYORIGUAL
     MAYORQ
@@ -44,8 +43,8 @@ Rule 4     instruccion -> imprimir PTCOMA
 Rule 5     instruccion -> declaracion PTCOMA
 Rule 6     instruccion -> condicional_if PTCOMA
 Rule 7     imprimir -> RCONSOLE PUNTO RLOG PARIZQ expresion PARDER
-Rule 8     declaracion -> RLET ID DPUNTOS tipo IGUAL expresion
-Rule 9     condicional_if -> RIF PARI expresion PARD LLAVEIZQ LLAVEDER
+Rule 8     declaracion -> RLET ID DOSPUNTOS tipo IGUAL expresion
+Rule 9     condicional_if -> RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER
 Rule 10    tipo -> RSTRING
 Rule 11    tipo -> RNUMBER
 Rule 12    tipo -> RBOOLEAN
@@ -70,7 +69,7 @@ CORIZQ               :
 DECIMAL              : 20
 DESIGUALDAD          : 
 DIV                  : 16
-DOSPUNTOS            : 
+DOSPUNTOS            : 8
 ENTERO               : 19
 ID                   : 8 18
 IGUAL                : 8
@@ -86,8 +85,8 @@ MENOS                : 14 17
 MOD                  : 
 NOT                  : 
 OR                   : 
-PARDER               : 7
-PARIZQ               : 7
+PARDER               : 7 9
+PARIZQ               : 7 9
 POR                  : 15
 POT                  : 
 PTCOMA               : 4 5 6
@@ -122,9 +121,6 @@ error                :
 
 Nonterminals, with rules where they appear
 
-DPUNTOS              : 8
-PARD                 : 9
-PARI                 : 9
 condicional_if       : 6
 declaracion          : 5
 expresion            : 7 8 9 13 13 14 14 15 15 16 16 17
@@ -133,4 +129,660 @@ init                 : 0
 instruccion          : 2 3
 instrucciones        : 1 2
 tipo                 : 8
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . init
+    (1) init -> . instrucciones
+    (2) instrucciones -> . instrucciones instruccion
+    (3) instrucciones -> . instruccion
+    (4) instruccion -> . imprimir PTCOMA
+    (5) instruccion -> . declaracion PTCOMA
+    (6) instruccion -> . condicional_if PTCOMA
+    (7) imprimir -> . RCONSOLE PUNTO RLOG PARIZQ expresion PARDER
+    (8) declaracion -> . RLET ID DOSPUNTOS tipo IGUAL expresion
+    (9) condicional_if -> . RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER
+
+    RCONSOLE        shift and go to state 7
+    RLET            shift and go to state 8
+    RIF             shift and go to state 9
+
+    init                           shift and go to state 1
+    instrucciones                  shift and go to state 2
+    instruccion                    shift and go to state 3
+    imprimir                       shift and go to state 4
+    declaracion                    shift and go to state 5
+    condicional_if                 shift and go to state 6
+
+state 1
+
+    (0) S' -> init .
+
+
+
+state 2
+
+    (1) init -> instrucciones .
+    (2) instrucciones -> instrucciones . instruccion
+    (4) instruccion -> . imprimir PTCOMA
+    (5) instruccion -> . declaracion PTCOMA
+    (6) instruccion -> . condicional_if PTCOMA
+    (7) imprimir -> . RCONSOLE PUNTO RLOG PARIZQ expresion PARDER
+    (8) declaracion -> . RLET ID DOSPUNTOS tipo IGUAL expresion
+    (9) condicional_if -> . RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER
+
+    $end            reduce using rule 1 (init -> instrucciones .)
+    RCONSOLE        shift and go to state 7
+    RLET            shift and go to state 8
+    RIF             shift and go to state 9
+
+    instruccion                    shift and go to state 10
+    imprimir                       shift and go to state 4
+    declaracion                    shift and go to state 5
+    condicional_if                 shift and go to state 6
+
+state 3
+
+    (3) instrucciones -> instruccion .
+
+    RCONSOLE        reduce using rule 3 (instrucciones -> instruccion .)
+    RLET            reduce using rule 3 (instrucciones -> instruccion .)
+    RIF             reduce using rule 3 (instrucciones -> instruccion .)
+    $end            reduce using rule 3 (instrucciones -> instruccion .)
+
+
+state 4
+
+    (4) instruccion -> imprimir . PTCOMA
+
+    PTCOMA          shift and go to state 11
+
+
+state 5
+
+    (5) instruccion -> declaracion . PTCOMA
+
+    PTCOMA          shift and go to state 12
+
+
+state 6
+
+    (6) instruccion -> condicional_if . PTCOMA
+
+    PTCOMA          shift and go to state 13
+
+
+state 7
+
+    (7) imprimir -> RCONSOLE . PUNTO RLOG PARIZQ expresion PARDER
+
+    PUNTO           shift and go to state 14
+
+
+state 8
+
+    (8) declaracion -> RLET . ID DOSPUNTOS tipo IGUAL expresion
+
+    ID              shift and go to state 15
+
+
+state 9
+
+    (9) condicional_if -> RIF . PARIZQ expresion PARDER LLAVEIZQ LLAVEDER
+
+    PARIZQ          shift and go to state 16
+
+
+state 10
+
+    (2) instrucciones -> instrucciones instruccion .
+
+    RCONSOLE        reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    RLET            reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    RIF             reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+    $end            reduce using rule 2 (instrucciones -> instrucciones instruccion .)
+
+
+state 11
+
+    (4) instruccion -> imprimir PTCOMA .
+
+    RCONSOLE        reduce using rule 4 (instruccion -> imprimir PTCOMA .)
+    RLET            reduce using rule 4 (instruccion -> imprimir PTCOMA .)
+    RIF             reduce using rule 4 (instruccion -> imprimir PTCOMA .)
+    $end            reduce using rule 4 (instruccion -> imprimir PTCOMA .)
+
+
+state 12
+
+    (5) instruccion -> declaracion PTCOMA .
+
+    RCONSOLE        reduce using rule 5 (instruccion -> declaracion PTCOMA .)
+    RLET            reduce using rule 5 (instruccion -> declaracion PTCOMA .)
+    RIF             reduce using rule 5 (instruccion -> declaracion PTCOMA .)
+    $end            reduce using rule 5 (instruccion -> declaracion PTCOMA .)
+
+
+state 13
+
+    (6) instruccion -> condicional_if PTCOMA .
+
+    RCONSOLE        reduce using rule 6 (instruccion -> condicional_if PTCOMA .)
+    RLET            reduce using rule 6 (instruccion -> condicional_if PTCOMA .)
+    RIF             reduce using rule 6 (instruccion -> condicional_if PTCOMA .)
+    $end            reduce using rule 6 (instruccion -> condicional_if PTCOMA .)
+
+
+state 14
+
+    (7) imprimir -> RCONSOLE PUNTO . RLOG PARIZQ expresion PARDER
+
+    RLOG            shift and go to state 17
+
+
+state 15
+
+    (8) declaracion -> RLET ID . DOSPUNTOS tipo IGUAL expresion
+
+    DOSPUNTOS       shift and go to state 18
+
+
+state 16
+
+    (9) condicional_if -> RIF PARIZQ . expresion PARDER LLAVEIZQ LLAVEDER
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 19
+
+state 17
+
+    (7) imprimir -> RCONSOLE PUNTO RLOG . PARIZQ expresion PARDER
+
+    PARIZQ          shift and go to state 27
+
+
+state 18
+
+    (8) declaracion -> RLET ID DOSPUNTOS . tipo IGUAL expresion
+    (10) tipo -> . RSTRING
+    (11) tipo -> . RNUMBER
+    (12) tipo -> . RBOOLEAN
+
+    RSTRING         shift and go to state 29
+    RNUMBER         shift and go to state 30
+    RBOOLEAN        shift and go to state 31
+
+    tipo                           shift and go to state 28
+
+state 19
+
+    (9) condicional_if -> RIF PARIZQ expresion . PARDER LLAVEIZQ LLAVEDER
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PARDER          shift and go to state 32
+    MAS             shift and go to state 33
+    MENOS           shift and go to state 34
+    POR             shift and go to state 35
+    DIV             shift and go to state 36
+
+
+state 20
+
+    (17) expresion -> MENOS . expresion
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 37
+
+state 21
+
+    (18) expresion -> ID .
+
+    PARDER          reduce using rule 18 (expresion -> ID .)
+    MAS             reduce using rule 18 (expresion -> ID .)
+    MENOS           reduce using rule 18 (expresion -> ID .)
+    POR             reduce using rule 18 (expresion -> ID .)
+    DIV             reduce using rule 18 (expresion -> ID .)
+    PTCOMA          reduce using rule 18 (expresion -> ID .)
+
+
+state 22
+
+    (19) expresion -> ENTERO .
+
+    PARDER          reduce using rule 19 (expresion -> ENTERO .)
+    MAS             reduce using rule 19 (expresion -> ENTERO .)
+    MENOS           reduce using rule 19 (expresion -> ENTERO .)
+    POR             reduce using rule 19 (expresion -> ENTERO .)
+    DIV             reduce using rule 19 (expresion -> ENTERO .)
+    PTCOMA          reduce using rule 19 (expresion -> ENTERO .)
+
+
+state 23
+
+    (20) expresion -> DECIMAL .
+
+    PARDER          reduce using rule 20 (expresion -> DECIMAL .)
+    MAS             reduce using rule 20 (expresion -> DECIMAL .)
+    MENOS           reduce using rule 20 (expresion -> DECIMAL .)
+    POR             reduce using rule 20 (expresion -> DECIMAL .)
+    DIV             reduce using rule 20 (expresion -> DECIMAL .)
+    PTCOMA          reduce using rule 20 (expresion -> DECIMAL .)
+
+
+state 24
+
+    (21) expresion -> CADENA .
+
+    PARDER          reduce using rule 21 (expresion -> CADENA .)
+    MAS             reduce using rule 21 (expresion -> CADENA .)
+    MENOS           reduce using rule 21 (expresion -> CADENA .)
+    POR             reduce using rule 21 (expresion -> CADENA .)
+    DIV             reduce using rule 21 (expresion -> CADENA .)
+    PTCOMA          reduce using rule 21 (expresion -> CADENA .)
+
+
+state 25
+
+    (22) expresion -> RTRUE .
+
+    PARDER          reduce using rule 22 (expresion -> RTRUE .)
+    MAS             reduce using rule 22 (expresion -> RTRUE .)
+    MENOS           reduce using rule 22 (expresion -> RTRUE .)
+    POR             reduce using rule 22 (expresion -> RTRUE .)
+    DIV             reduce using rule 22 (expresion -> RTRUE .)
+    PTCOMA          reduce using rule 22 (expresion -> RTRUE .)
+
+
+state 26
+
+    (23) expresion -> RFALSE .
+
+    PARDER          reduce using rule 23 (expresion -> RFALSE .)
+    MAS             reduce using rule 23 (expresion -> RFALSE .)
+    MENOS           reduce using rule 23 (expresion -> RFALSE .)
+    POR             reduce using rule 23 (expresion -> RFALSE .)
+    DIV             reduce using rule 23 (expresion -> RFALSE .)
+    PTCOMA          reduce using rule 23 (expresion -> RFALSE .)
+
+
+state 27
+
+    (7) imprimir -> RCONSOLE PUNTO RLOG PARIZQ . expresion PARDER
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 38
+
+state 28
+
+    (8) declaracion -> RLET ID DOSPUNTOS tipo . IGUAL expresion
+
+    IGUAL           shift and go to state 39
+
+
+state 29
+
+    (10) tipo -> RSTRING .
+
+    IGUAL           reduce using rule 10 (tipo -> RSTRING .)
+
+
+state 30
+
+    (11) tipo -> RNUMBER .
+
+    IGUAL           reduce using rule 11 (tipo -> RNUMBER .)
+
+
+state 31
+
+    (12) tipo -> RBOOLEAN .
+
+    IGUAL           reduce using rule 12 (tipo -> RBOOLEAN .)
+
+
+state 32
+
+    (9) condicional_if -> RIF PARIZQ expresion PARDER . LLAVEIZQ LLAVEDER
+
+    LLAVEIZQ        shift and go to state 40
+
+
+state 33
+
+    (13) expresion -> expresion MAS . expresion
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 41
+
+state 34
+
+    (14) expresion -> expresion MENOS . expresion
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 42
+
+state 35
+
+    (15) expresion -> expresion POR . expresion
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 43
+
+state 36
+
+    (16) expresion -> expresion DIV . expresion
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 44
+
+state 37
+
+    (17) expresion -> MENOS expresion .
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PARDER          reduce using rule 17 (expresion -> MENOS expresion .)
+    MAS             reduce using rule 17 (expresion -> MENOS expresion .)
+    MENOS           reduce using rule 17 (expresion -> MENOS expresion .)
+    POR             reduce using rule 17 (expresion -> MENOS expresion .)
+    DIV             reduce using rule 17 (expresion -> MENOS expresion .)
+    PTCOMA          reduce using rule 17 (expresion -> MENOS expresion .)
+
+  ! MAS             [ shift and go to state 33 ]
+  ! MENOS           [ shift and go to state 34 ]
+  ! POR             [ shift and go to state 35 ]
+  ! DIV             [ shift and go to state 36 ]
+
+
+state 38
+
+    (7) imprimir -> RCONSOLE PUNTO RLOG PARIZQ expresion . PARDER
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PARDER          shift and go to state 45
+    MAS             shift and go to state 33
+    MENOS           shift and go to state 34
+    POR             shift and go to state 35
+    DIV             shift and go to state 36
+
+
+state 39
+
+    (8) declaracion -> RLET ID DOSPUNTOS tipo IGUAL . expresion
+    (13) expresion -> . expresion MAS expresion
+    (14) expresion -> . expresion MENOS expresion
+    (15) expresion -> . expresion POR expresion
+    (16) expresion -> . expresion DIV expresion
+    (17) expresion -> . MENOS expresion
+    (18) expresion -> . ID
+    (19) expresion -> . ENTERO
+    (20) expresion -> . DECIMAL
+    (21) expresion -> . CADENA
+    (22) expresion -> . RTRUE
+    (23) expresion -> . RFALSE
+
+    MENOS           shift and go to state 20
+    ID              shift and go to state 21
+    ENTERO          shift and go to state 22
+    DECIMAL         shift and go to state 23
+    CADENA          shift and go to state 24
+    RTRUE           shift and go to state 25
+    RFALSE          shift and go to state 26
+
+    expresion                      shift and go to state 46
+
+state 40
+
+    (9) condicional_if -> RIF PARIZQ expresion PARDER LLAVEIZQ . LLAVEDER
+
+    LLAVEDER        shift and go to state 47
+
+
+state 41
+
+    (13) expresion -> expresion MAS expresion .
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PARDER          reduce using rule 13 (expresion -> expresion MAS expresion .)
+    MAS             reduce using rule 13 (expresion -> expresion MAS expresion .)
+    MENOS           reduce using rule 13 (expresion -> expresion MAS expresion .)
+    PTCOMA          reduce using rule 13 (expresion -> expresion MAS expresion .)
+    POR             shift and go to state 35
+    DIV             shift and go to state 36
+
+  ! POR             [ reduce using rule 13 (expresion -> expresion MAS expresion .) ]
+  ! DIV             [ reduce using rule 13 (expresion -> expresion MAS expresion .) ]
+  ! MAS             [ shift and go to state 33 ]
+  ! MENOS           [ shift and go to state 34 ]
+
+
+state 42
+
+    (14) expresion -> expresion MENOS expresion .
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PARDER          reduce using rule 14 (expresion -> expresion MENOS expresion .)
+    MAS             reduce using rule 14 (expresion -> expresion MENOS expresion .)
+    MENOS           reduce using rule 14 (expresion -> expresion MENOS expresion .)
+    PTCOMA          reduce using rule 14 (expresion -> expresion MENOS expresion .)
+    POR             shift and go to state 35
+    DIV             shift and go to state 36
+
+  ! POR             [ reduce using rule 14 (expresion -> expresion MENOS expresion .) ]
+  ! DIV             [ reduce using rule 14 (expresion -> expresion MENOS expresion .) ]
+  ! MAS             [ shift and go to state 33 ]
+  ! MENOS           [ shift and go to state 34 ]
+
+
+state 43
+
+    (15) expresion -> expresion POR expresion .
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PARDER          reduce using rule 15 (expresion -> expresion POR expresion .)
+    MAS             reduce using rule 15 (expresion -> expresion POR expresion .)
+    MENOS           reduce using rule 15 (expresion -> expresion POR expresion .)
+    POR             reduce using rule 15 (expresion -> expresion POR expresion .)
+    DIV             reduce using rule 15 (expresion -> expresion POR expresion .)
+    PTCOMA          reduce using rule 15 (expresion -> expresion POR expresion .)
+
+  ! MAS             [ shift and go to state 33 ]
+  ! MENOS           [ shift and go to state 34 ]
+  ! POR             [ shift and go to state 35 ]
+  ! DIV             [ shift and go to state 36 ]
+
+
+state 44
+
+    (16) expresion -> expresion DIV expresion .
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PARDER          reduce using rule 16 (expresion -> expresion DIV expresion .)
+    MAS             reduce using rule 16 (expresion -> expresion DIV expresion .)
+    MENOS           reduce using rule 16 (expresion -> expresion DIV expresion .)
+    POR             reduce using rule 16 (expresion -> expresion DIV expresion .)
+    DIV             reduce using rule 16 (expresion -> expresion DIV expresion .)
+    PTCOMA          reduce using rule 16 (expresion -> expresion DIV expresion .)
+
+  ! MAS             [ shift and go to state 33 ]
+  ! MENOS           [ shift and go to state 34 ]
+  ! POR             [ shift and go to state 35 ]
+  ! DIV             [ shift and go to state 36 ]
+
+
+state 45
+
+    (7) imprimir -> RCONSOLE PUNTO RLOG PARIZQ expresion PARDER .
+
+    PTCOMA          reduce using rule 7 (imprimir -> RCONSOLE PUNTO RLOG PARIZQ expresion PARDER .)
+
+
+state 46
+
+    (8) declaracion -> RLET ID DOSPUNTOS tipo IGUAL expresion .
+    (13) expresion -> expresion . MAS expresion
+    (14) expresion -> expresion . MENOS expresion
+    (15) expresion -> expresion . POR expresion
+    (16) expresion -> expresion . DIV expresion
+
+    PTCOMA          reduce using rule 8 (declaracion -> RLET ID DOSPUNTOS tipo IGUAL expresion .)
+    MAS             shift and go to state 33
+    MENOS           shift and go to state 34
+    POR             shift and go to state 35
+    DIV             shift and go to state 36
+
+
+state 47
+
+    (9) condicional_if -> RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER .
+
+    PTCOMA          reduce using rule 9 (condicional_if -> RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER .)
 
