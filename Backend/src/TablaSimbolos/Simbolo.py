@@ -22,7 +22,7 @@ class Simbolo():
     def getValor(self):
         return self.valor
     
-    # Aqui va lo del array :3
+    # Aqui va lo del array :3 :3 :3 :3 :3
     
     def setValor(self, valor):
         self.valor = valor

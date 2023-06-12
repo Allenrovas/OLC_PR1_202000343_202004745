@@ -9,10 +9,20 @@ from src.Expresiones.primitivos import Primitivos
 from src.Instrucciones.imprimir import Imprimir
 from src.Instrucciones.declaraciones import Declaracion_Variables
 from src.TablaSimbolos.TablaSimbolos import TablaSimbolos
+from src.Instrucciones.condicional_if import If
+from src.Expresiones.relacional_logica import Relacional_Logica
+from src.Instrucciones.ciclo_for import For
+
 
 precedence = (
+    ('left','OR'),
+    ('left','AND'),
+    ('right','UNOT'),
+    ('left','IGUALDAD','DESIGUALDAD'),
+    ('left','MAYORQ','MENORQ','MAYORIGUAL','MENORIGUAL'),
     ('left','MAS','MENOS'),
-    ('left','POR','DIV'),
+    ('left','POR','DIV','MOD'),
+    ('left','POT'),
     ('left','PARIZQ', 'PARDER'),
     ('right','UMENOS'),
 )
@@ -37,22 +47,59 @@ def p_instrucciones_2(t):
 
 def p_instrucciones_evaluar(t):
     '''instruccion : imprimir PTCOMA
-                    | declaracion PTCOMA
-                    | condicional_if PTCOMA'''
+                    | declaracion_normal PTCOMA
+                    | condicional_ifs PTCOMA
+                    | ciclo_for PTCOMA
+                    '''
+    t[0] = t[1]
+
+def p_instrucciones_evaluar_1(t):
+    '''instruccion : imprimir
+                    | declaracion_normal
+                    | condicional_ifs
+                    | ciclo_for'''
     t[0] = t[1]
 
 def p_imprimir(t):
     'imprimir : RCONSOLE PUNTO RLOG PARIZQ expresion PARDER'
     t[0] = Imprimir(t[5], t.lineno(1), find_column(input, t.slice[1]))
 
-def p_declaracion(t):
-    'declaracion : RLET ID DOSPUNTOS tipo IGUAL expresion'
-    t[0] = Declaracion_Variables(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
+def p_declaracion_normal(t):
+    '''declaracion_normal : RLET ID DOSPUNTOS tipo IGUAL expresion
+                            | RLET ID IGUAL expresion'''
+    if len(t) == 7:
+        t[0] = Declaracion_Variables(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
+    else:
+        t[0] = Declaracion_Variables(t[2], None , t[4], t.lineno(1), find_column(input, t.slice[1]))
+
+#def p_funcion(t):
+    '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ LLAVEDER
+                | RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
+                | RFUNCTION ID PARIZQ lista_parametros PARDER LLAVEIZQ LLAVEDER
+                | RFUNCTION ID PARIZQ lista_parametros PARDER LLAVEIZQ instrucciones LLAVEDER'''
+ #   print('Funcion:',t[2])
+  #  t[0] = t[2]
+
+def p_condicional_ifs(t):
+    'condicional_ifs : RIF condicional_if'
+    t[0] = t[2]
 
 def p_condicional_if(t):
-    'condicional_if : RIF PARIZQ expresion PARDER LLAVEIZQ LLAVEDER'
-    print('Expresion:',t[3])
-    t[0] = t[3]
+    'condicional_if : PARIZQ expresion PARDER LLAVEIZQ instrucciones LLAVEDER'
+    t[0] = If(t[2], t[5], None, None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_condicional_if_else(t):
+    'condicional_if : PARIZQ expresion PARDER LLAVEIZQ instrucciones LLAVEDER RELSE LLAVEIZQ instrucciones LLAVEDER'
+    t[0] = If(t[2], t[5], t[9], None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_condicional_if_else_if(t):
+    'condicional_if : PARIZQ expresion PARDER LLAVEIZQ instrucciones LLAVEDER RELSE RIF condicional_if'
+    t[0] = If(t[2], t[5], None, t[9], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_ciclo_for(t):
+    'ciclo_for : RFOR PARIZQ declaracion_normal PTCOMA expresion PTCOMA expresion PARDER LLAVEIZQ instrucciones LLAVEDER'
+    t[0] = For(t[3], t[5], t[7], t[10], t.lineno(1), find_column(input, t.slice[1]))
+
 
 def p_tipo(t):
     '''tipo : RSTRING
@@ -66,7 +113,18 @@ def p_expresion_binaria(t):
     '''expresion : expresion MAS expresion
                 | expresion MENOS expresion
                 | expresion POR expresion
-                | expresion DIV expresion'''
+                | expresion DIV expresion
+                | expresion IGUALDAD expresion
+                | expresion DESIGUALDAD expresion
+                | expresion MAYORQ expresion
+                | expresion MENORQ expresion
+                | expresion MAYORIGUAL expresion
+                | expresion MENORIGUAL expresion
+                | expresion AND expresion
+                | expresion OR expresion
+                | expresion POT expresion
+                | expresion MOD expresion
+                '''
     if t[2] == '+'  : 
         t[0] = Aritmetica(t[1], t[3], '+', t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '-':
@@ -75,14 +133,59 @@ def p_expresion_binaria(t):
         t[0] = Aritmetica(t[1], t[3], '*', t.lineno(2), find_column(input, t.slice[2]))
     elif t[2] == '/': 
         t[0] = Aritmetica(t[1], t[3], '/', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '===':
+        t[0] = Relacional_Logica(t[1], t[3], '===', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '!==':
+        t[0] = Relacional_Logica(t[1], t[3], '!==', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '>':
+        t[0] = Relacional_Logica(t[1], t[3], '>', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '<':
+        t[0] = Relacional_Logica(t[1], t[3], '<', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '>=':
+        t[0] = Relacional_Logica(t[1], t[3], '>=', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '<=':
+        t[0] = Relacional_Logica(t[1], t[3], '<=', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '&&':
+        t[0] = Relacional_Logica(t[1], t[3], '&&', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '||':
+        t[0] = Relacional_Logica(t[1], t[3], '||', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '^':
+        t[0] = Aritmetica(t[1], t[3], '^', t.lineno(2), find_column(input, t.slice[2]))
+    elif t[2] == '%':
+        t[0] = Aritmetica(t[1], t[3], '%', t.lineno(2), find_column(input, t.slice[2]))
+
 
 def p_expresion_unaria(t):
-    'expresion : MENOS expresion %prec UMENOS'
-    t[0] = -t[2]
+    '''expresion : MENOS expresion %prec UMENOS
+                | NOT expresion %prec UNOT'''
+    if t[1] == '-':
+        t[0] = Aritmetica(0, t[2], '-', t.lineno(1), find_column(input, t.slice[1]))
+    elif t[1] == '!':
+        t[0] = Relacional_Logica(t[2], None, '!', t.lineno(1), find_column(input, t.slice[1]))
+
+def p_expresion_incrementable(t):
+    '''expresion : expresion MAS MAS
+                | expresion MENOS MENOS'''
+    if t[2] == '+':
+        incrementable = Primitivos('number', 1, t.lineno(2), find_column(input, t.slice[2]))
+        t[0] = Aritmetica(t[1],incrementable, '+', t.lineno(2), find_column(input, t.slice[2]))
+    else:
+        incrementable = Primitivos('number', 1, t.lineno(2), find_column(input, t.slice[2]))
+        t[0] = Aritmetica(t[1],incrementable, '-', t.lineno(2), find_column(input, t.slice[2]))
+        
     
 def p_identificador(t):
     'expresion : ID'
     t[0] = Identificador(t[1], t.lineno(1), find_column(input, t.slice[1]), None)
+
+def p_nulo(t):
+    'expresion : RNULL'
+    t[0] = Primitivos('null',None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_any(t):
+    'expresion : RANY'
+    t[0] = Primitivos('any',None, t.lineno(1), find_column(input, t.slice[1]))
+
 
 def p_expresion_entero(t):
     'expresion : ENTERO'
@@ -121,9 +224,13 @@ def parse(inp):
     return parser.parse(inp)
 
 entrada = '''
-let a : number = 10;
-let b : number = a;
-console.log(b);
+let a : number = 5;
+let b : number = a++;
+
+for(let i : number = 0; i < 10; i++){
+    console.log(i);
+};
+
 '''
 
 
