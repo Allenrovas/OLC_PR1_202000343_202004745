@@ -13,8 +13,8 @@ class Aritmetica(Abstract):
     def interpretar(self, tree, table):
         izq = self.op_izq.interpretar(tree, table)
         der = self.op_der.interpretar(tree, table)
-        tipoIzq = self.op_izq.getTipo()
-        tipoDer = self.op_der.getTipo()
+        tipoIzq = self.op_izq.tipo
+        tipoDer = self.op_der.tipo
 
         # SUMA
         if self.op == '+':

@@ -12,6 +12,10 @@ from src.TablaSimbolos.TablaSimbolos import TablaSimbolos
 from src.Instrucciones.condicional_if import If
 from src.Expresiones.relacional_logica import Relacional_Logica
 from src.Instrucciones.ciclo_for import For
+from src.Instrucciones._return import Return
+from src.Instrucciones.llamada_funcion import Llamada_Funcion
+from src.Instrucciones.funcion import Funcion
+from src.Instrucciones.Asignacion import Asignacion
 
 
 precedence = (
@@ -50,6 +54,10 @@ def p_instrucciones_evaluar(t):
                     | declaracion_normal PTCOMA
                     | condicional_ifs PTCOMA
                     | ciclo_for PTCOMA
+                    | funcion PTCOMA
+                    | llamada_funcion PTCOMA
+                    | r_return PTCOMA
+                    | asignacion PTCOMA
                     '''
     t[0] = t[1]
 
@@ -57,12 +65,21 @@ def p_instrucciones_evaluar_1(t):
     '''instruccion : imprimir
                     | declaracion_normal
                     | condicional_ifs
-                    | ciclo_for'''
+                    | ciclo_for
+                    | funcion
+                    | llamada_funcion
+                    | r_return
+                    | asignacion
+                    '''
     t[0] = t[1]
 
 def p_imprimir(t):
     'imprimir : RCONSOLE PUNTO RLOG PARIZQ expresion PARDER'
     t[0] = Imprimir(t[5], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_asignacion(t):
+    'asignacion : ID IGUAL expresion'
+    t[0] = Asignacion(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_declaracion_normal(t):
     '''declaracion_normal : RLET ID DOSPUNTOS tipo IGUAL expresion
@@ -71,14 +88,22 @@ def p_declaracion_normal(t):
         t[0] = Declaracion_Variables(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
     else:
         t[0] = Declaracion_Variables(t[2], None , t[4], t.lineno(1), find_column(input, t.slice[1]))
+def p_funcion(t):
+    'funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER'
+    t[0] = Funcion(t[2],None,t[6], t.lineno(1), find_column(input, t.slice[1]))
 
-#def p_funcion(t):
-    '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ LLAVEDER
-                | RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
-                | RFUNCTION ID PARIZQ lista_parametros PARDER LLAVEIZQ LLAVEDER
-                | RFUNCTION ID PARIZQ lista_parametros PARDER LLAVEIZQ instrucciones LLAVEDER'''
- #   print('Funcion:',t[2])
-  #  t[0] = t[2]
+def p_llamada_funcion(t):
+    'llamada_funcion : ID PARIZQ PARDER'
+    t[0] = Llamada_Funcion(t[1],None,t.lineno(1), find_column(input, t.slice[1]))
+
+def p_expresion_funcion(t):
+    'expresion : llamada_funcion'
+    t[0] = t[1]
+
+def p_return(t):
+    'r_return : RRETURN expresion'
+    t[0] = Return(t[2], t.lineno(1), find_column(input, t.slice[1]))
+
 
 def p_condicional_ifs(t):
     'condicional_ifs : RIF condicional_if'
@@ -211,7 +236,7 @@ def p_expresion_boolean(t):
 def p_error(t):
     print(" Error sintáctico en '%s'" % t.value)
 
-input = ''
+
 
 def parse(inp):
     global errores
@@ -224,12 +249,18 @@ def parse(inp):
     return parser.parse(inp)
 
 entrada = '''
-let a : number = 5;
-let b : number = a++;
 
-for(let i : number = 0; i < 10; i++){
-    console.log(i);
-};
+function diez(){
+    return 10;
+}
+function quince(){
+    return 15;
+}
+let a:number = diez()/2 + quince();
+console.log(a);
+
+a = "10";
+console.log(a);
 
 '''
 
@@ -249,10 +280,13 @@ ast = Arbol(instrucciones)
 tsg = TablaSimbolos()
 ast.setTsglobal(tsg)
 
+for instruccion in ast.getInstr():
+    if isinstance(instruccion, Funcion):
+        ast.setFunciones(instruccion)
 
 for instruccion in ast.getInstr():
-    value = instruccion.interpretar(ast,tsg)
-    if isinstance(value, Excepcion):
-        ast.getExcepciones().append(value)
-        ast.updateConsola(value.toString())
+    if not(isinstance(instruccion, Funcion)):
+        value = instruccion.interpretar(ast,tsg)
+        if isinstance(value, Excepcion):
+            ast.setExcepciones(value)
 print(ast.getConsola())
