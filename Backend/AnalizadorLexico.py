@@ -33,6 +33,7 @@ reserved = {
 }
 
 tokens  = [
+    'COMA',
     'PUNTO',
     'PTCOMA',
     'MAS',
@@ -64,6 +65,7 @@ tokens  = [
     'LLAVEDER',
 ]+ list(reserved.values())
 # Tokens
+t_COMA          = r'\,'
 t_PUNTO         = r'\.'
 t_PTCOMA        = r'\;'
 t_MAS           = r'\+'

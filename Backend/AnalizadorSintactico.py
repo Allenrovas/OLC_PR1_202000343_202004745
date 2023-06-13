@@ -24,7 +24,7 @@ precedence = (
     ('right','UNOT'),
     ('left','IGUALDAD','DESIGUALDAD'),
     ('left','MAYORQ','MENORQ','MAYORIGUAL','MENORIGUAL'),
-    ('left','MAS','MENOS'),
+    ('left','MAS','MENOS','COMA'),
     ('left','POR','DIV','MOD'),
     ('left','POT'),
     ('left','PARIZQ', 'PARDER'),
@@ -74,7 +74,7 @@ def p_instrucciones_evaluar_1(t):
     t[0] = t[1]
 
 def p_imprimir(t):
-    'imprimir : RCONSOLE PUNTO RLOG PARIZQ expresion PARDER'
+    'imprimir : RCONSOLE PUNTO RLOG PARIZQ lista_parametros PARDER'
     t[0] = Imprimir(t[5], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_asignacion(t):
@@ -235,6 +235,19 @@ def p_expresion_boolean(t):
 
 def p_error(t):
     print(" Error sintáctico en '%s'" % t.value)
+
+def p_parametros(t):
+    'lista_parametros : lista_parametros COMA parametro_lista'
+    t[1].append(t[3])
+    t[0] = t[1]
+
+def p_parametros_2(t):
+    'lista_parametros : parametro_lista'
+    t[0] = [t[1]]
+
+def p_parametro_lista(t):
+    '''parametro_lista : expresion'''
+    t[0] = t[1]
 
 
 
