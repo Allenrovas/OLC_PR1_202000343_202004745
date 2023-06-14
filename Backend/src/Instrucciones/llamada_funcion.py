@@ -1,4 +1,5 @@
 
+from ..TablaSimbolos.Simbolo import Simbolo
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 from ..TablaSimbolos.Excepcion import Excepcion
@@ -17,9 +18,18 @@ class Llamada_Funcion(Abstract):
         if result == None:
             return Excepcion("Semantico", "No se encontro la funcion: " + str(self.nombre), str(self.fila), str(self.columna))
         entorno = TablaSimbolos(arbol.getTsglobal())
-        # if len(self.parametros) == len(result.parametros):
-        #     # aqui se hace la declaracion de los parametros
-        #     pass
+        if len(self.parametros) == len(result.parametros):
+            contador = 0
+            for expresion in self.parametros:
+                resultE = expresion.interpretar(arbol, tabla)
+                if isinstance(resultE, Excepcion): return resultE
+                if result.parametros[contador]['tipo'] == expresion.tipo:
+                    simbolo = Simbolo(str(result.parametros[contador]['id']), expresion.tipo, resultE, self.fila, self.columna)
+                    resultT = entorno.setTablaFuncion(simbolo)
+                    if isinstance(resultT, Excepcion): return resultT
+                else:
+                    return Excepcion("Semantico", "Tipo de dato diferente en Parametros", str(self.fila), str(self.columna))
+                contador += 1
 
         value = result.interpretar(arbol, entorno) # me puede retornar un valor
 

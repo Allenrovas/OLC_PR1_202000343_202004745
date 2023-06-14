@@ -15,12 +15,47 @@ class Aritmetica(Abstract):
         der = self.op_der.interpretar(tree, table)
         tipoIzq = self.op_izq.tipo
         tipoDer = self.op_der.tipo
+        if isinstance(izq, Excepcion): return izq
+        if isinstance(der, Excepcion): return der
 
         # SUMA
         if self.op == '+':
             if tipoIzq == 'number' and tipoDer == 'number':
                 self.tipo = 'number'
                 return izq + der
+            elif tipoIzq == 'number' and tipoDer == 'any':
+                if isinstance(der, int) or isinstance(der, float):
+                    self.tipo = 'number'
+                    return izq + der
+                else:
+                    return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'number':
+                if isinstance(izq, int) or isinstance(izq, float):
+                    self.tipo = 'number'
+                    return izq + der
+                else:
+                    return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+            elif tipoIzq == 'string' and tipoDer == 'any':
+                if isinstance(der, str):
+                    self.tipo = 'string'
+                    return str(str(izq) + str(der))
+                else:
+                    return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'string':
+                if isinstance(izq, str):
+                    self.tipo = 'string'
+                    return str(str(izq) + str(der))
+                else:
+                    return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'any':
+                if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                    self.tipo = 'number'
+                    return izq + der
+                elif isinstance(der, str) and isinstance(izq, str):
+                    self.tipo = 'string'
+                    return str(str(izq) + str(der))
+                else:
+                    return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
             elif tipoIzq == 'string' and tipoDer == 'string':
                 self.tipo = 'string'
                 return str(str(izq) + str(der))
@@ -31,6 +66,24 @@ class Aritmetica(Abstract):
             if tipoIzq == 'number' and tipoDer == 'number':
                 self.tipo = 'number'
                 return izq - der
+            elif tipoIzq == 'number' and tipoDer == 'any':
+                if isinstance(der, int) or isinstance(der, float):
+                    self.tipo = 'number'
+                    return izq - der
+                else:
+                    return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'number':
+                if isinstance(izq, int) or isinstance(izq, float):
+                    self.tipo = 'number'
+                    return izq - der
+                else:
+                    return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'any':
+                if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                    self.tipo = 'number'
+                    return izq - der
+                else:
+                    return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
             else:
                 return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
         # MULTIPLICACION
@@ -38,6 +91,24 @@ class Aritmetica(Abstract):
             if tipoIzq == 'number' and tipoDer == 'number':
                 self.tipo = 'number'
                 return izq * der
+            elif tipoIzq == 'number' and tipoDer == 'any':
+                if isinstance(der, int) or isinstance(der, float):
+                    self.tipo = 'number'
+                    return izq * der
+                else:
+                    return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'number':
+                if isinstance(izq, int) or isinstance(izq, float):
+                    self.tipo = 'number'
+                    return izq * der
+                else:
+                    return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'any':
+                if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                    self.tipo = 'number'
+                    return izq * der
+                else:
+                    return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
             else:
                 return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
         # DIVISION
@@ -47,6 +118,30 @@ class Aritmetica(Abstract):
                     return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
                 self.tipo = 'number'
                 return izq / der
+            if tipoIzq == 'number' and tipoDer == 'any':
+                if isinstance(der, int) or isinstance(der, float):
+                    if der == 0:
+                        return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                    self.tipo = 'number'
+                    return izq / der
+                else:
+                    return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+            if tipoIzq == 'any' and tipoDer == 'number':
+                if isinstance(izq, int) or isinstance(izq, float):
+                    if der == 0:
+                        return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                    self.tipo = 'number'
+                    return izq / der
+                else:
+                    return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+            if tipoIzq == 'any' and tipoDer == 'any':
+                if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                    if der == 0:
+                        return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                    self.tipo = 'number'
+                    return izq / der
+                else:
+                    return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
             else:
                 return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
         # MODULO
@@ -56,6 +151,30 @@ class Aritmetica(Abstract):
                     return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
                 self.tipo = 'number'
                 return izq % der
+            if tipoIzq == 'number' and tipoDer == 'any':
+                if isinstance(der, int) or isinstance(der, float):
+                    if der == 0:
+                        return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                    self.tipo = 'number'
+                    return izq % der
+                else:
+                    return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+            if tipoIzq == 'any' and tipoDer == 'number':
+                if isinstance(izq, int) or isinstance(izq, float):
+                    if der == 0:
+                        return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                    self.tipo = 'number'
+                    return izq % der
+                else:
+                    return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+            if tipoIzq == 'any' and tipoDer == 'any':
+                if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                    if der == 0:
+                        return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                    self.tipo = 'number'
+                    return izq % der
+                else:
+                    return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
             else:
                 return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
         # POTENCIA
@@ -63,8 +182,27 @@ class Aritmetica(Abstract):
             if tipoIzq == 'number' and tipoDer == 'number':
                 self.tipo = 'number'
                 return izq ** der
+            elif tipoIzq == 'number' and tipoDer == 'any':
+                if isinstance(der, int) or isinstance(der, float):
+                    self.tipo = 'number'
+                    return izq ** der
+                else:
+                    return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'number':
+                if isinstance(izq, int) or isinstance(izq, float):
+                    self.tipo = 'number'
+                    return izq ** der
+                else:
+                    return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
+            elif tipoIzq == 'any' and tipoDer == 'any':
+                if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                    self.tipo = 'number'
+                    return izq ** der
+                else:
+                    return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
             else:
                 return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
+
 
     def getTipo(self):
         return self.tipo

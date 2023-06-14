@@ -1,6 +1,7 @@
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
+from ..Instrucciones._return import Return
 
 class If(Abstract):
 
@@ -22,11 +23,16 @@ class If(Abstract):
                 result = instruccion.interpretar(arbol, entorno) 
                 if isinstance(result, Excepcion) :
                     arbol.setExcepciones(result)
+                if isinstance(result, Return): return result    
         elif self.bloqueElse != None:
             entorno = TablaSimbolos(tabla)
             for instruccion in self.bloqueElse:
                 result = instruccion.interpretar(arbol, entorno) 
                 if isinstance(result, Excepcion) :
                     arbol.setExcepcion(result)
+                if isinstance(result, Return): return result    
         elif self.bloqueElseif != None:
             result = self.bloqueElseif.interpretar(arbol, tabla)
+            if isinstance(result, Excepcion) : return result
+
+            if isinstance(result, Return): return result

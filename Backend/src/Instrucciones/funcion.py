@@ -6,9 +6,9 @@ from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 
 class Funcion(Abstract):
 
-    def __init__(self, nombre, parametro, instrucciones, fila, columna):
+    def __init__(self, nombre, parametros, instrucciones, fila, columna):
         self.nombre = nombre
-        self.parametro = parametro
+        self.parametros = parametros
         self.instrucciones = instrucciones
         self.tipo = None
         super().__init__(fila, columna)

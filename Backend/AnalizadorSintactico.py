@@ -1,4 +1,4 @@
-#Precedencia para las operaciones
+ #Precedencia para las operaciones
 from src.Expresiones.identificador import Identificador
 from src.TablaSimbolos.Arbol import Arbol
 from src.TablaSimbolos.Excepcion import Excepcion
@@ -16,6 +16,9 @@ from src.Instrucciones._return import Return
 from src.Instrucciones.llamada_funcion import Llamada_Funcion
 from src.Instrucciones.funcion import Funcion
 from src.Instrucciones.Asignacion import Asignacion
+from src.Instrucciones.ciclo_while import While
+import sys
+sys.setrecursionlimit(10000000)
 
 
 precedence = (
@@ -58,6 +61,7 @@ def p_instrucciones_evaluar(t):
                     | llamada_funcion PTCOMA
                     | r_return PTCOMA
                     | asignacion PTCOMA
+                    | ciclo_while PTCOMA
                     '''
     t[0] = t[1]
 
@@ -70,31 +74,82 @@ def p_instrucciones_evaluar_1(t):
                     | llamada_funcion
                     | r_return
                     | asignacion
+                    | ciclo_while
                     '''
     t[0] = t[1]
 
 def p_imprimir(t):
-    'imprimir : RCONSOLE PUNTO RLOG PARIZQ lista_parametros PARDER'
+    'imprimir : RCONSOLE PUNTO RLOG PARIZQ expresion PARDER'
     t[0] = Imprimir(t[5], t.lineno(1), find_column(input, t.slice[1]))
-
+#console.log()
 def p_asignacion(t):
     'asignacion : ID IGUAL expresion'
     t[0] = Asignacion(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_declaracion_normal(t):
     '''declaracion_normal : RLET ID DOSPUNTOS tipo IGUAL expresion
-                            | RLET ID IGUAL expresion'''
+                            | RLET ID
+                            | RLET ID DOSPUNTOS tipo
+                            | RLET ID IGUAL expresion
+                            '''
     if len(t) == 7:
         t[0] = Declaracion_Variables(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 3:
+        t[0] = Declaracion_Variables(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
     else:
-        t[0] = Declaracion_Variables(t[2], None , t[4], t.lineno(1), find_column(input, t.slice[1]))
+        if t[3] == ":":
+            t[0] = Declaracion_Variables(t[2], t[4], None, t.lineno(1), find_column(input, t.slice[1]))
+        else:
+            t[0] = Declaracion_Variables(t[2], 'any' , t[4], t.lineno(1), find_column(input, t.slice[1]))
+        
 def p_funcion(t):
-    'funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER'
-    t[0] = Funcion(t[2],None,t[6], t.lineno(1), find_column(input, t.slice[1]))
+    '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
+               | RFUNCTION ID PARIZQ parametros PARDER LLAVEIZQ instrucciones LLAVEDER'''
+    if len(t) == 8:
+        t[0] = Funcion(t[2],None,t[6], t.lineno(1), find_column(input, t.slice[1]))
+    else:
+        t[0] = Funcion(t[2], t[4], t[7], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_llamada_funcion(t):
-    'llamada_funcion : ID PARIZQ PARDER'
-    t[0] = Llamada_Funcion(t[1],None,t.lineno(1), find_column(input, t.slice[1]))
+    '''llamada_funcion : ID PARIZQ PARDER
+                       | ID PARIZQ parametros_llamada PARDER'''
+    if len(t) == 4:
+        t[0] = Llamada_Funcion(t[1],None,t.lineno(1), find_column(input, t.slice[1]))
+    else:
+        t[0] = Llamada_Funcion(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_parametros(t):
+    'parametros : parametros COMA parametro'
+    t[1].append(t[3])
+    t[0] = t[1]
+
+def p_parametros_2(t):
+    'parametros : parametro'
+    t[0] = [t[1]]
+
+def p_parametro(t):
+    '''parametro : RLET ID DOSPUNTOS tipo  
+                | ID DOSPUNTOS tipo
+                | ID'''
+    if len(t) == 2:
+        t[0] = {'tipo': 'any', 'id': t[1]}
+    elif len(t) == 4:
+        t[0] = {'tipo': t[3], 'id': t[1]}
+    else:
+        t[0] = {'tipo': t[4], 'id': t[2]}
+
+def p_parametros_llamada(t):
+    'parametros_llamada : parametros_llamada COMA parametro_ll'
+    t[1].append(t[3])
+    t[0] = t[1]
+
+def p_parametros_ll_2(t):
+    'parametros_llamada : parametro_ll'
+    t[0] = [t[1]]
+
+def p_parametro_ll(t):
+    '''parametro_ll : expresion'''
+    t[0] = t[1]
 
 def p_expresion_funcion(t):
     'expresion : llamada_funcion'
@@ -124,6 +179,10 @@ def p_condicional_if_else_if(t):
 def p_ciclo_for(t):
     'ciclo_for : RFOR PARIZQ declaracion_normal PTCOMA expresion PTCOMA expresion PARDER LLAVEIZQ instrucciones LLAVEDER'
     t[0] = For(t[3], t[5], t[7], t[10], t.lineno(1), find_column(input, t.slice[1]))
+    
+def p_ciclo_while(t):
+    'ciclo_while : RWHILE PARIZQ expresion PARDER LLAVEIZQ instrucciones LLAVEDER'
+    t[0] = While( t[3], t[6], t.lineno(1), find_column(input, t.slice[1]))    
 
 
 def p_tipo(t):
@@ -236,20 +295,6 @@ def p_expresion_boolean(t):
 def p_error(t):
     print(" Error sintáctico en '%s'" % t.value)
 
-def p_parametros(t):
-    'lista_parametros : lista_parametros COMA parametro_lista'
-    t[1].append(t[3])
-    t[0] = t[1]
-
-def p_parametros_2(t):
-    'lista_parametros : parametro_lista'
-    t[0] = [t[1]]
-
-def p_parametro_lista(t):
-    '''parametro_lista : expresion'''
-    t[0] = t[1]
-
-
 
 def parse(inp):
     global errores
@@ -263,18 +308,18 @@ def parse(inp):
 
 entrada = '''
 
-function diez(){
-    return 10;
-}
-function quince(){
-    return 15;
-}
-let a:number = diez()/2 + quince();
+
+
+
+let a:number;
 console.log(a);
 
-a = "10";
-console.log(a);
+while(a<10){
+    a = a + 1;
+    console.log(a);
+}
 
+  
 '''
 
 
@@ -286,8 +331,8 @@ def test_lexer(lexer):
         print(tok)
 
 
-# lexer.input(entrada)
-# test_lexer(lexer)
+#lexer.input(entrada)
+#test_lexer(lexer)
 instrucciones = parse(entrada)
 ast = Arbol(instrucciones)
 tsg = TablaSimbolos()

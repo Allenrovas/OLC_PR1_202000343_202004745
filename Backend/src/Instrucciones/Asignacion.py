@@ -15,6 +15,9 @@ class Asignacion(Abstract):
         if self.valor == None:
             return Excepcion("Semantico", "Valor de asignacion no encontrado.", self.fila, self.columna)
         exp = self.valor.interpretar(tree, table)
+        if simbolo.getTipo() == 'any':
+            simbolo.setValor(exp)
+            return None
         if self.valor.tipo != simbolo.getTipo():
             return Excepcion("Semantico", "Tipo de dato diferente en Asignacion.", self.fila, self.columna)
         simbolo.setValor(exp)
