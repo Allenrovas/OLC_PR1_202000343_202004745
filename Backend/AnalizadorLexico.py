@@ -154,8 +154,9 @@ t_ignore = " \t"
 
 #Error
 def t_error(t):
-    errores.append(Excepcion("Lexico", "Error Lexico: " + t.value[0], t.lexer.lineno, find_column(input, t)))
+    errores.append(Excepcion("Lexico", "Error Lexico: " + t.value[0], t.lexer.lineno, find_column(t.value, t)))
     t.lexer.skip(1)
+    print("Caracter no valido '%s'" % t.value[0])
 
 def find_column(inp, tk):
     line_start = inp.rfind('\n', 0, tk.lexpos) + 1

@@ -371,45 +371,23 @@ def parse(inp):
     lexer.lineno = 1
     return parser.parse(inp)
 
-entrada = '''
-
-
-
-
-
+entrada = ''' 
 let val1:number = 1;
 let val2:number = 10;
 let val3:number = 2021.2020;
 console.log("Probando declaracion de variables \\n");
 console.log(val1, " ", val2, " ", val3);
 console.log("---------------------------------");
-val1 = val1 + 41 - 123 * 4 / (2 + 2 * 2) - (10 + (125 % 5)) * 2 ^ 2;
-val2 = 11 * (11 % (12 -10)) + 22 / 2;
-val3 = 2 ^ (5 * 12 ^ 2) + 25 / 5;
-console.log("Probando asignación de variables y aritmeticas");
-console.log(val1, " ", val2, " ", val3);
-console.log("---------------------------------");
-let rel1 = (((val1 - val2) === 24) && (true && (false || 5 >= 5))) || ((7*7) !== (15+555) || 0-61 > 51);
-let rel2 = (7*7) <= (15+555) && 1 < 2;
-let rel3 = ((0 === 0) !== ((532 > 532)) === ("Hola" === "Hola")) && (false || (!false));
-console.log("Probando relacionales y logicas");
-console.log(rel1);
-console.log(rel2);
-console.log(rel3);
-console.log("---------------------------------");
 
-
-
-  
 '''
 
 
-'''def test_lexer(lexer):
+def test_lexer(lexer):
     while True:
         tok = lexer.token()
         if not tok:
             break  # No more input
-        print(tok)'''
+        print(tok)
 
 
 #lexer.input(entrada)
