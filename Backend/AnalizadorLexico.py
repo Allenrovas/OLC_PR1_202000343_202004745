@@ -1,5 +1,6 @@
 import re
 import ply.lex as lex
+from src.TablaSimbolos.Excepcion import Excepcion
 
 errores = []
 
@@ -14,11 +15,11 @@ reserved = {
     'false'       :   'RFALSE',
     'any'         :   'RANY',
     'interface'   :   'RINTERFACE',
-    'toUpperCase' :   'RTUPPERCASE',
-    'toLowerCase' :   'RTOLOWERCASE',
-    'toFixed'     :   'RTOFIXED',
-    'toExponential':  'RTOEXPONENTIAL',
-    'toString'    :   'RTOSTRING',
+    #'toUpperCase' :   'RTUPPERCASE',
+    #'toLowerCase' :   'RTOLOWERCASE',
+    #'toFixed'     :   'RTOFIXED',
+    #'toExponential':  'RTOEXPONENTIAL',
+    #'toString'    :   'RTOSTRING',
     'split'       :   'RSPLIT',
     'concat'      :   'RCONCAT',
     'let'         :   'RLET',
@@ -153,6 +154,7 @@ t_ignore = " \t"
 
 #Error
 def t_error(t):
+    errores.append(Excepcion("Lexico", "Error Lexico: " + t.value[0], t.lexer.lineno, find_column(input, t)))
     t.lexer.skip(1)
 
 def find_column(inp, tk):

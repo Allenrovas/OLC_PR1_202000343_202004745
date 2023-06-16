@@ -2,6 +2,9 @@ from ..TablaSimbolos.Simbolo import Simbolo
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
+from ..Instrucciones.Break import Break
+from ..Instrucciones.Continue import Continue
+from ..Instrucciones._return import Return
 
 class While(Abstract):
 
@@ -26,6 +29,9 @@ class While(Abstract):
                 result = instruccion.interpretar(arbol, nuevaTabla)
                 if isinstance(result, Excepcion):
                     arbol.excepciones.append(result)
+                if isinstance(result, Break): return None
+                if isinstance(result, Continue): break
+                if isinstance(result, Return): return result
 
             condicion = self.condicion.interpretar(arbol, nuevaTabla)
             if isinstance(condicion, Excepcion): return condicion

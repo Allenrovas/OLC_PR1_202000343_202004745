@@ -3,7 +3,7 @@ from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 from ..TablaSimbolos.Excepcion import Excepcion
 
 
-class Return(Abstract): 
+class Continue(Abstract):
 
     def __init__(self,expresion, fila, columna):
         self.expresion = expresion

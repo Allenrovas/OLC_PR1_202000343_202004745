@@ -13,10 +13,18 @@ from src.Instrucciones.condicional_if import If
 from src.Expresiones.relacional_logica import Relacional_Logica
 from src.Instrucciones.ciclo_for import For
 from src.Instrucciones._return import Return
+from src.Instrucciones.Break import Break
+from src.Instrucciones.Continue import Continue
 from src.Instrucciones.llamada_funcion import Llamada_Funcion
 from src.Instrucciones.funcion import Funcion
 from src.Instrucciones.Asignacion import Asignacion
 from src.Instrucciones.ciclo_while import While
+from src.Nativas.toString import String
+from src.Nativas.toLowerCase import ToLowerCase
+from src.Nativas.toUpperCase import ToUpperCase
+from src.Nativas.typeof import Typeof
+from src.Nativas.toFixed import ToFixed
+from src.Nativas.toExponential import ToExponential
 import sys
 sys.setrecursionlimit(10000000)
 
@@ -79,7 +87,7 @@ def p_instrucciones_evaluar_1(t):
     t[0] = t[1]
 
 def p_imprimir(t):
-    'imprimir : RCONSOLE PUNTO RLOG PARIZQ expresion PARDER'
+    'imprimir : RCONSOLE PUNTO RLOG PARIZQ parametros_llamada PARDER'
     t[0] = Imprimir(t[5], t.lineno(1), find_column(input, t.slice[1]))
 #console.log()
 def p_asignacion(t):
@@ -182,7 +190,40 @@ def p_ciclo_for(t):
     
 def p_ciclo_while(t):
     'ciclo_while : RWHILE PARIZQ expresion PARDER LLAVEIZQ instrucciones LLAVEDER'
-    t[0] = While( t[3], t[6], t.lineno(1), find_column(input, t.slice[1]))    
+    t[0] = While( t[3], t[6], t.lineno(1), find_column(input, t.slice[1]))
+
+def agregarNativas(ast):
+    instrucciones = []
+
+    nombre = "typeof"
+    parametro = [{'tipo':'any', 'id':'typeof##Param1'}]
+    typeof = Typeof(nombre, parametro, instrucciones, -1,-1)
+    ast.setFunciones(typeof)
+
+    nombre = "toUpperCase"
+    parametro = [{'tipo':'string', 'id':'toUpperCase##Param1'}]
+    toUpperCase = ToUpperCase(nombre, parametro, instrucciones, -1,-1)
+    ast.setFunciones(toUpperCase)
+
+    nombre = "toLowerCase"
+    parametro = [{'tipo':'string', 'id':'toLower##Param1'}]
+    toLowerCase = ToLowerCase(nombre, parametro, instrucciones, -1,-1)
+    ast.setFunciones(toLowerCase)
+
+    nombre = "toString"
+    parametro = [{'tipo':'any', 'id':'toString##Param1'}]
+    toString = String(nombre, parametro, instrucciones, -1,-1)
+    ast.setFunciones(toString)
+
+    nombre = "toFixed"
+    parametro = [{'tipo':'number', 'id':'toFixed##Param1'},{'tipo':'number', 'id':'toFixed##Param2'}]
+    toFixed = ToFixed(nombre, parametro, instrucciones, -1,-1)
+    ast.setFunciones(toFixed)
+
+    nombre = "toExponential"
+    parametro = [{'tipo':'number', 'id':'toExponential##Param1'},{'tipo':'number', 'id':'toExponential##Param2'}]
+    toExponential = ToExponential(nombre, parametro, instrucciones, -1,-1)
+    ast.setFunciones(toExponential)
 
 
 def p_tipo(t):
@@ -247,6 +288,10 @@ def p_expresion_unaria(t):
     elif t[1] == '!':
         t[0] = Relacional_Logica(t[2], None, '!', t.lineno(1), find_column(input, t.slice[1]))
 
+def p_expresionParentizada(t):
+    'expresion : PARIZQ expresion PARDER'
+    t[0] = t[2]
+
 def p_expresion_incrementable(t):
     '''expresion : expresion MAS MAS
                 | expresion MENOS MENOS'''
@@ -293,7 +338,27 @@ def p_expresion_boolean(t):
         t[0] = Primitivos('boolean', False, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_error(t):
-    print(" Error sintáctico en '%s'" % t.value)
+    try:
+        print(" Error sintáctico en '%s'" % t.value)
+        #errores.append(Excepcion("Lexico","Error léxico: " + t.value[0],t.lexer.lineno, find_column(input, t)))
+        errores.append(Excepcion("Sintactico","Error sintáctico: " + t.value,t.lineno, find_column(input, t)))
+    except:
+        print("")
+    if t:
+        print("Token :",t, "\n")
+        parser.errok()
+    else:
+        errores.append(Excepcion("Sintactico","Error sintáctico: fin de archivo inesperado",0,0))
+        print("Fin del Archivo")
+
+
+'''
+def p_error(p):
+    if p:
+        print("Syntax error at '%s'" % p.value)
+    else:
+        print("Syntax error at EOF")
+'''
 
 
 def parse(inp):
@@ -311,24 +376,40 @@ entrada = '''
 
 
 
-let a:number;
-console.log(a);
 
-while(a<10){
-    a = a + 1;
-    console.log(a);
-}
+let val1:number = 1;
+let val2:number = 10;
+let val3:number = 2021.2020;
+console.log("Probando declaracion de variables \\n");
+console.log(val1, " ", val2, " ", val3);
+console.log("---------------------------------");
+val1 = val1 + 41 - 123 * 4 / (2 + 2 * 2) - (10 + (125 % 5)) * 2 ^ 2;
+val2 = 11 * (11 % (12 -10)) + 22 / 2;
+val3 = 2 ^ (5 * 12 ^ 2) + 25 / 5;
+console.log("Probando asignación de variables y aritmeticas");
+console.log(val1, " ", val2, " ", val3);
+console.log("---------------------------------");
+let rel1 = (((val1 - val2) === 24) && (true && (false || 5 >= 5))) || ((7*7) !== (15+555) || 0-61 > 51);
+let rel2 = (7*7) <= (15+555) && 1 < 2;
+let rel3 = ((0 === 0) !== ((532 > 532)) === ("Hola" === "Hola")) && (false || (!false));
+console.log("Probando relacionales y logicas");
+console.log(rel1);
+console.log(rel2);
+console.log(rel3);
+console.log("---------------------------------");
+
+
 
   
 '''
 
 
-def test_lexer(lexer):
+'''def test_lexer(lexer):
     while True:
         tok = lexer.token()
         if not tok:
             break  # No more input
-        print(tok)
+        print(tok)'''
 
 
 #lexer.input(entrada)
@@ -337,6 +418,7 @@ instrucciones = parse(entrada)
 ast = Arbol(instrucciones)
 tsg = TablaSimbolos()
 ast.setTsglobal(tsg)
+agregarNativas(ast)
 
 for instruccion in ast.getInstr():
     if isinstance(instruccion, Funcion):
@@ -347,4 +429,15 @@ for instruccion in ast.getInstr():
         value = instruccion.interpretar(ast,tsg)
         if isinstance(value, Excepcion):
             ast.setExcepciones(value)
+        if isinstance(value, Break):
+            error = Excepcion("Semantico", "Sentencia Break fuera de ciclo", instruccion.fila, instruccion.columna)
+            ast.setExcepciones(error)
+        if isinstance(value, Continue):
+            error = Excepcion("Semantico", "Sentencia Continue fuera de ciclo", instruccion.fila, instruccion.columna)
+            ast.setExcepciones(error)
+        if isinstance(value, Return):
+            error = Excepcion("Semantico", "Sentencia Return fuera de ciclo", instruccion.fila, instruccion.columna)
+            ast.setExcepciones(error)
+
+
 print(ast.getConsola())

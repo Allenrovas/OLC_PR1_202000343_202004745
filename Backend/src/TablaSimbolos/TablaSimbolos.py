@@ -5,6 +5,9 @@ class TablaSimbolos:
     def __init__(self, anterior = None):
         self.tabla = {} # Al inicio la tabla esta vacia
         self.anterior = anterior # Apuntador al entorno anterior
+        
+        
+        
     
     def getTablaG(self):
         return self.tabla
