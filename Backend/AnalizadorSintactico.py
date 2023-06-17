@@ -1,4 +1,6 @@
  #Precedencia para las operaciones
+from src.Instrucciones.Dec_Array import Declaracion_Array
+from src.Instrucciones.AsignacionStruct import AsignacionStruct
 from src.Expresiones.identificador import Identificador
 from src.TablaSimbolos.Arbol import Arbol
 from src.TablaSimbolos.Excepcion import Excepcion
@@ -25,6 +27,8 @@ from src.Nativas.toUpperCase import ToUpperCase
 from src.Nativas.typeof import Typeof
 from src.Nativas.toFixed import ToFixed
 from src.Nativas.toExponential import ToExponential
+from src.Instrucciones.Struct import Dec_Struct
+from src.Expresiones.struct import Struct
 import sys
 sys.setrecursionlimit(10000000)
 
@@ -70,6 +74,10 @@ def p_instrucciones_evaluar(t):
                     | r_return PTCOMA
                     | asignacion PTCOMA
                     | ciclo_while PTCOMA
+                    | break PTCOMA
+                    | continue PTCOMA
+                    | struct PTCOMA
+                    | asignacion_struct PTCOMA
                     '''
     t[0] = t[1]
 
@@ -83,6 +91,10 @@ def p_instrucciones_evaluar_1(t):
                     | r_return
                     | asignacion
                     | ciclo_while
+                    | break
+                    | continue
+                    | struct
+                    | asignacion_struct
                     '''
     t[0] = t[1]
 
@@ -109,6 +121,29 @@ def p_declaracion_normal(t):
             t[0] = Declaracion_Variables(t[2], t[4], None, t.lineno(1), find_column(input, t.slice[1]))
         else:
             t[0] = Declaracion_Variables(t[2], 'any' , t[4], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_struct(t):
+    'struct : RSTRUCT ID LLAVEIZQ parametros_struct LLAVEDER'
+    t[0] = Dec_Struct(t[2], t.lineno(1), find_column(input, t.slice[1]), t[4])
+
+def p_asignacion_struct(t):
+    'asignacion_struct : ID PUNTO parametros_asignacion_struct IGUAL expresion'
+    t[0] = AsignacionStruct(t[1], t[3], t[5], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_declaracion_array(t):
+    '''declaracion_array : RLET ID DOSPUNTOS tipo IGUAL CORIZQ parametros_llamada CORDER
+                            | RLET ID DOSPUNTOS tipo IGUAL CORIZQ CORDER
+                            | RLET ID IGUAL CORIZQ parametros_llamada CORDER
+                            | RLET ID IGUAL CORIZQ CORDER
+                            '''
+    if len(t) == 9:
+        t[0] = Declaracion_Array(t[2], t[4], t[7], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 8:
+        t[0] = Declaracion_Array(t[2], t[4], None, t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 7:
+        t[0] = Declaracion_Array(t[2], 'any', t[5], t.lineno(1), find_column(input, t.slice[1]))
+    else:
+        t[0] = Declaracion_Array(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
         
 def p_funcion(t):
     '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
@@ -125,6 +160,48 @@ def p_llamada_funcion(t):
         t[0] = Llamada_Funcion(t[1],None,t.lineno(1), find_column(input, t.slice[1]))
     else:
         t[0] = Llamada_Funcion(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_parametros_struct(t):
+    'parametros_struct : parametros_struct params_struct'
+    t[1].append(t[2])
+    t[0] = t[1]
+
+def p_parametros_struct_2(t):
+    'parametros_struct : params_struct'
+    t[0] = [t[1]]
+
+def p_params_struct(t):
+    '''params_struct : declaracion_struct PTCOMA'''
+    t[0] = t[1]
+
+def p_declaracion_struct(t):
+    '''declaracion_struct : ID DOSPUNTOS tipo IGUAL expresion
+                       | ID 
+                       | ID DOSPUNTOS tipo
+                       | ID IGUAL expresion
+                       '''
+    if len(t) == 4:
+        if t[2] == ':':
+            t[0] = Declaracion_Variables(t[1],t[3],None, t.lineno(1), find_column(input, t.slice[1]))
+        else:
+            t[0] = Declaracion_Variables(t[2], 'any', t[3], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 6:
+        t[0] = Declaracion_Variables(t[1], t[3], t[5], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 2:
+        t[0] = Declaracion_Variables(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
+
+def parametros_asignacion_struct(t):
+    'parametros_asignacion_struct : parametros_asignacion_struct PUNTO asignacion_struct_param'
+    t[1].append(t[3])
+    t[0] = t[1]
+
+def parametros_asignacion_struct_2(t):
+    'parametros_asignacion_struct : asignacion_struct_param'
+    t[0] = [t[1]]
+
+def asignacion_struct_param(t):
+    '''asignacion_struct_param : ID'''
+    t[0] = t[1]
 
 def p_parametros(t):
     'parametros : parametros COMA parametro'
@@ -301,6 +378,10 @@ def p_expresion_incrementable(t):
     else:
         incrementable = Primitivos('number', 1, t.lineno(2), find_column(input, t.slice[2]))
         t[0] = Aritmetica(t[1],incrementable, '-', t.lineno(2), find_column(input, t.slice[2]))
+
+def p_expresion_stuct(t):
+    'expresion : ID PUNTO parametros_asignacion_struct'
+    t[0] = Struct(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
         
     
 def p_identificador(t):
