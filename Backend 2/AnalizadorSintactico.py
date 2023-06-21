@@ -30,6 +30,7 @@ from src.Nativas.toExponential import ToExponential
 from src.Instrucciones.Struct import Dec_Struct
 from src.Expresiones.struct import Struct
 import sys
+from src.TablaSimbolos.generador import Generador
 sys.setrecursionlimit(10000000)
 
 
@@ -473,15 +474,20 @@ def test_lexer(lexer):
 
 #lexer.input(entrada)
 #test_lexer(lexer)
+
+genAux = Generador()
+genAux.cleanAll(); # Limpia todos los archivos anteriores
+generador = genAux.getInstance()
+
 instrucciones = parse(entrada)
 ast = Arbol(instrucciones)
 tsg = TablaSimbolos()
 ast.setTsglobal(tsg)
 agregarNativas(ast)
 
-for instruccion in ast.getInstr():
+'''for instruccion in ast.getInstr():
     if isinstance(instruccion, Funcion):
-        ast.setFunciones(instruccion)
+        ast.setFunciones(instruccion)'''
 
 for instruccion in ast.getInstr():
     if not(isinstance(instruccion, Funcion)):
@@ -498,5 +504,4 @@ for instruccion in ast.getInstr():
             error = Excepcion("Semantico", "Sentencia Return fuera de ciclo", instruccion.fila, instruccion.columna)
             ast.setExcepciones(error)
 
-
-print(ast.getConsola())
+print(generador.getCode())

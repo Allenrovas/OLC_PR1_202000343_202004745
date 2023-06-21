@@ -1,18 +1,18 @@
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.return__ import Return
+
 class Primitivos(Abstract):
 
     def __init__(self, tipo, valor, fila, columna):
         self.tipo = tipo # Number, String, Boolean
         self.valor = valor # 4, 'hola', true
-        self.tipoaux = ''
+        self.tipoAux = ''
         super().__init__(fila, columna)
     
     def interpretar(self, tree, table):
-        genaux = Generador()
-        generador = genaux.getInstance()
-        
+        genAux = Generador()
+        generador = genAux.getInstance()
         if self.tipo == 'number':
             return Return(str(self.valor), self.tipo, False)
         elif self.tipo == 'string':
@@ -26,8 +26,26 @@ class Primitivos(Abstract):
             generador.nextHeap()
 
             return Return(temporal, self.tipo, True)
-
+        
         elif self.tipo == 'boolean':
-            ''
+            if self.trueLbl == '':
+                self.trueLbl = generador.newLabel()
+            if self.falseLbl == '':
+                self.falseLbl = generador.newLabel()
+            
+            if self.valor:
+                generador.addGoto(self.trueLbl)
+                generador.addComment("GOTO PARA EVITAR ERROR DE GO")
+                generador.addGoto(self.falseLbl)
+            else:
+                generador.addGoto(self.falseLbl)
+                generador.addComment("GOTO PARA EVITAR ERROR DE GO")
+                generador.addGoto(self.trueLbl)
+            
+            ret = Return(self.valor, self.tipo, False)
+            ret.setTrueLbl(self.trueLbl)
+            ret.setFalseLbl(self.falseLbl)
+            return ret
+
     def getTipo(self):
         return self.tipo

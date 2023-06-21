@@ -27,15 +27,29 @@ class Declaracion_Variables(Abstract):
         if str(self.tipo) == str(self.valor.tipo):
             inHeap = value.getTipo() == 'string' or value.getTipo() == 'interface'
             simbolo = tabla.setTabla(self.ide, value.getTipo(), inHeap , self.find)
+
         else:
             generator.addComment('Error, tipo de dato diferente declarado.')
             result = Excepcion("Semantico", "Tipo de dato diferente declarado.", self.fila, self.columna)
             return result
-
+        
         tempPos = simbolo.pos
         if not simbolo.isGlobal:
             tempPos = generator.addTemp()
             generator.addExp(tempPos, 'P', simbolo.pos, '+')
+        
+        if value.getTipo() == 'boolean':
+            tempLbl = generator.newLabel()
+            
+            generator.putLabel(value.trueLbl)
+            generator.setStack(tempPos, "1")
+            
+            generator.addGoto(tempLbl)
 
-        generator.setStack(tempPos, value.value)
+            generator.putLabel(value.falseLbl)
+            generator.setStack(tempPos, "0")
+
+            generator.putLabel(tempLbl)
+        else:
+            generator.setStack(tempPos, value.value)
         generator.addComment('Fin de compilacion de valor de variable')

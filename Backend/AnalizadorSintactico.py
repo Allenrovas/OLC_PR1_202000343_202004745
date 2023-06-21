@@ -1,4 +1,5 @@
  #Precedencia para las operaciones
+from src.Instrucciones.AsignacionArray import Asignacion_Array
 from src.Instrucciones.Dec_Array import Declaracion_Array
 from src.Instrucciones.AsignacionStruct import AsignacionStruct
 from src.Expresiones.identificador import Identificador
@@ -78,6 +79,7 @@ def p_instrucciones_evaluar(t):
                     | continue PTCOMA
                     | struct PTCOMA
                     | asignacion_struct PTCOMA
+                    | asignacion_array PTCOMA
                     '''
     t[0] = t[1]
 
@@ -95,6 +97,7 @@ def p_instrucciones_evaluar_1(t):
                     | continue
                     | struct
                     | asignacion_struct
+                    | asignacion_array
                     '''
     t[0] = t[1]
 
@@ -131,7 +134,7 @@ def p_asignacion_struct(t):
     t[0] = AsignacionStruct(t[1], t[3], t[5], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_declaracion_array(t):
-    '''declaracion_array : RLET ID DOSPUNTOS tipo IGUAL CORIZQ parametros_llamada CORDER
+    '''declaracion_normal : RLET ID DOSPUNTOS tipo IGUAL CORIZQ parametros_llamada CORDER
                             | RLET ID DOSPUNTOS tipo IGUAL CORIZQ CORDER
                             | RLET ID IGUAL CORIZQ parametros_llamada CORDER
                             | RLET ID IGUAL CORIZQ CORDER
@@ -144,6 +147,10 @@ def p_declaracion_array(t):
         t[0] = Declaracion_Array(t[2], 'any', t[5], t.lineno(1), find_column(input, t.slice[1]))
     else:
         t[0] = Declaracion_Array(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_asignacion_array(t):
+    'asignacion_array : ID parametros_array IGUAL expresion'
+    t[0] = Asignacion_Array(t[1], t[2], t[4], t.lineno(1), find_column(input, t.slice[1]))
         
 def p_funcion(t):
     '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
@@ -160,6 +167,31 @@ def p_llamada_funcion(t):
         t[0] = Llamada_Funcion(t[1],None,t.lineno(1), find_column(input, t.slice[1]))
     else:
         t[0] = Llamada_Funcion(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_parametros_array(t):
+    'parametros_array : parametros_array CORIZQ expresion CORDER'
+    t[1].append(t[3])
+    t[0] = t[1]
+
+def p_parametros_array_2(t):
+    'parametros_array : CORIZQ expresion CORDER'
+    t[0] = [t[2]]
+
+def p_expresion_array(t):
+    '''expresion : ID parametros_array'''
+    t[0] = Array(t[1], t[2],'array', t.lineno(1), find_column(input, t.slice[1]))
+
+def p_expresion_array_2(t):
+    '''expresion : CORIZQ DOSPUNTOS CORDER'''
+    t[0] = Array(None, t.lineno(1), find_column(input, t.slice[1]))
+
+def p_expresion_array_3(t):
+    '''expresion : CORIZQ parametros_llamada CORDER'''
+    t[0] = Array(t[2], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_expresion_array_4(t):
+    '''expresion : CORIZQ expresion DOSPUNTOS expresion CORDER'''
+    t[0] = Array(None, t.lineno(1), find_column(input, t.slice[1]))
 
 def p_parametros_struct(t):
     'parametros_struct : parametros_struct params_struct'

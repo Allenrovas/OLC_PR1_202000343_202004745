@@ -11,7 +11,7 @@ class TablaSimbolos:
         self.recTemps = False
         self.size = 0
         if anterior != None:
-            self.size = self.anterior.size
+            self.size = anterior.size
 
     def setTabla(self, id, tipo, inHeap, find = True):
         if find:

@@ -26,3 +26,7 @@ class Typeof(Funcion):
             return 'string'
         elif (type(valor) == bool):
             return 'boolean'
+        elif (type(valor) == list):
+            return 'array'
+        elif (type(valor) == dict):
+            return 'struct'

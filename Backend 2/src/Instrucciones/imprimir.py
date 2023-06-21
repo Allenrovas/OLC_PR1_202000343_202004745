@@ -5,6 +5,7 @@ from typing import Dict, List
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.return__ import Return
 
+
 class Imprimir(Abstract):
 
     def __init__(self, expresion, fila, columna):
@@ -12,30 +13,41 @@ class Imprimir(Abstract):
         super().__init__(fila, columna)
     
     def interpretar(self, tree, table):
-        genaux = Generador()
-        generador = genaux.getInstance()
-        
-        
-        #Recibe una lista 
-        value = ''
+        genAux = Generador()
+        generator = genAux.getInstance()
+
         value = self.expresion.interpretar(tree, table)
 
         if isinstance(value, Excepcion): return value
 
         if value.getTipo() == 'number':
-            generador.addPrint('f', value.getValue())
+            generator.addPrint('f', value.getValue())
         elif value.getTipo() == 'string':
-            generador.fPrintString()
+            generator.fPrintString()
 
-            paramTemp = generador.addTemp()
+            paramTemp = generator.addTemp()
+            
+            generator.addExp(paramTemp, 'P', table.size, '+')
+            generator.addExp(paramTemp, paramTemp, '1', '+')
+            generator.setStack(paramTemp, value.value)
+            
+            generator.newEnv(table.size)
+            generator.callFun('printString')
 
-            generador.addExp(paramTemp, 'P', table.size, '+')
-            generador.addExp(paramTemp, paramTemp, '1', '+')
-            generador.setStack(paramTemp, value.value)
+            temp = generator.addTemp()
+            generator.getStack(temp, 'P')
+            generator.retEnv(table.size)
+        elif value.getTipo() == 'boolean':
+            tempLbl = generator.newLabel()
 
-            generador.newEnv(table.size)
-            generador.callFun('printString')
+            generator.putLabel(value.getTrueLbl())
+            generator.printTrue()
 
-            temp = generador.addTemp()
-            generador.getStack(temp, 'P')
-            generador.retEnv(table.size)
+            generator.addGoto(tempLbl)
+
+            generator.putLabel(value.getFalseLbl())
+            generator.printFalse()
+
+            generator.putLabel(tempLbl)
+
+        generator.addPrint('c', 10)
