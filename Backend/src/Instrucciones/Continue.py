@@ -5,15 +5,9 @@ from ..TablaSimbolos.Excepcion import Excepcion
 
 class Continue(Abstract):
 
-    def __init__(self,expresion, fila, columna):
-        self.expresion = expresion
-        self.value = None
-        self.tipo = None
-        super().__init__(fila, columna)
-
-    def interpretar(self, arbol, tabla):
-        result = self.expresion.interpretar(arbol, tabla)
-        if isinstance(result, Excepcion): return result
-        self.tipo = self.expresion.tipo
-        self.value = result
+    def __init__(self, fila, columna):
+        self.fila = fila
+        self.colum = columna
+    
+    def interpretar(self, tree, table):
         return self

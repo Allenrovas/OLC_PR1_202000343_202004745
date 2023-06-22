@@ -3,6 +3,7 @@ from src.Instrucciones.AsignacionArray import Asignacion_Array
 from src.Instrucciones.Dec_Array import Declaracion_Array
 from src.Instrucciones.AsignacionStruct import AsignacionStruct
 from src.Expresiones.identificador import Identificador
+from src.Expresiones.array import Array
 from src.TablaSimbolos.Arbol import Arbol
 from src.TablaSimbolos.Excepcion import Excepcion
 import ply.yacc as yacc
@@ -75,8 +76,8 @@ def p_instrucciones_evaluar(t):
                     | r_return PTCOMA
                     | asignacion PTCOMA
                     | ciclo_while PTCOMA
-                    | break PTCOMA
-                    | continue PTCOMA
+                    | r_break PTCOMA
+                    | r_continue PTCOMA
                     | struct PTCOMA
                     | asignacion_struct PTCOMA
                     | asignacion_array PTCOMA
@@ -93,8 +94,8 @@ def p_instrucciones_evaluar_1(t):
                     | r_return
                     | asignacion
                     | ciclo_while
-                    | break
-                    | continue
+                    | r_break
+                    | r_continue
                     | struct
                     | asignacion_struct
                     | asignacion_array
@@ -126,7 +127,7 @@ def p_declaracion_normal(t):
             t[0] = Declaracion_Variables(t[2], 'any' , t[4], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_struct(t):
-    'struct : RSTRUCT ID LLAVEIZQ parametros_struct LLAVEDER'
+    'struct : RINTERFACE ID LLAVEIZQ parametros_struct LLAVEDER'
     t[0] = Dec_Struct(t[2], t.lineno(1), find_column(input, t.slice[1]), t[4])
 
 def p_asignacion_struct(t):
@@ -178,20 +179,20 @@ def p_parametros_array_2(t):
     t[0] = [t[2]]
 
 def p_expresion_array(t):
-    '''expresion : ID parametros_array'''
-    t[0] = Array(t[1], t[2],'array', t.lineno(1), find_column(input, t.slice[1]))
+    'expresion : ID parametros_array'
+    t[0] = Array(t[1],t.lineno(1), find_column(input, t.slice[1]),'array',t[2])
 
 def p_expresion_array_2(t):
     '''expresion : CORIZQ DOSPUNTOS CORDER'''
-    t[0] = Array(None, t.lineno(1), find_column(input, t.slice[1]))
+    t[0] = Array(t[1], t.lineno(1), find_column(input, t.slice[1]),'array',None)
 
 def p_expresion_array_3(t):
     '''expresion : CORIZQ parametros_llamada CORDER'''
-    t[0] = Array(t[2], t.lineno(1), find_column(input, t.slice[1]))
+    t[0] = Array(None, t.lineno(1), find_column(input, t.slice[1]),'array',None,t[2])
 
 def p_expresion_array_4(t):
     '''expresion : CORIZQ expresion DOSPUNTOS expresion CORDER'''
-    t[0] = Array(None, t.lineno(1), find_column(input, t.slice[1]))
+    t[0] = Array(t[1], t.lineno(1), find_column(input, t.slice[1]),'array',None,[t[2],t[4]])
 
 def p_parametros_struct(t):
     'parametros_struct : parametros_struct params_struct'
@@ -222,16 +223,16 @@ def p_declaracion_struct(t):
     elif len(t) == 2:
         t[0] = Declaracion_Variables(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
 
-def parametros_asignacion_struct(t):
+def p_parametros_asignacion_struct(t):
     'parametros_asignacion_struct : parametros_asignacion_struct PUNTO asignacion_struct_param'
     t[1].append(t[3])
     t[0] = t[1]
 
-def parametros_asignacion_struct_2(t):
+def p_parametros_asignacion_struct_2(t):
     'parametros_asignacion_struct : asignacion_struct_param'
     t[0] = [t[1]]
 
-def asignacion_struct_param(t):
+def p_asignacion_struct_param(t):
     '''asignacion_struct_param : ID'''
     t[0] = t[1]
 
@@ -275,6 +276,14 @@ def p_expresion_funcion(t):
 def p_return(t):
     'r_return : RRETURN expresion'
     t[0] = Return(t[2], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_break(t):
+    'r_break : RBREAK'
+    t[0] = Break(t.lineno(1), find_column(input, t.slice[1]))
+
+def p_continue(t):
+    'r_continue : RCONTINUE'
+    t[0] = Continue(t.lineno(1), find_column(input, t.slice[1]))
 
 
 def p_condicional_ifs(t):
@@ -465,13 +474,7 @@ def p_error(t):
         print("Fin del Archivo")
 
 
-'''
-def p_error(p):
-    if p:
-        print("Syntax error at '%s'" % p.value)
-    else:
-        print("Syntax error at EOF")
-'''
+
 
 
 def parse(inp):
