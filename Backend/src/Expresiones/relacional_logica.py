@@ -13,29 +13,31 @@ class Relacional_Logica(Abstract):
     def interpretar(self, tree, table):
         izq = self.op_izq.interpretar(tree, table)
         if isinstance(izq, Excepcion): return izq
-        if self.op != '!':
-            der = self.op_der.interpretar(tree, table)
-            if isinstance(der, Excepcion): return der
-        if self.op == '<':
-            return izq < der
-        elif self.op == '>':
-            return izq > der
-        elif self.op == '===':
-            return izq == der
-        elif self.op == '!==':
-            return izq != der
-        elif self.op == '<=':
-            return izq <= der
-        elif self.op == '>=':
-            return izq >= der
-        elif self.op == '&&':
-            return izq and der
-        elif self.op == '||':
-            return izq or der
-        elif self.op == '!':
+        if self.op == '!':
             return not izq
         else:
-            return Excepcion("Semantico", "Operacion no valida.", self.fila, self.columna)
+            der = self.op_der.interpretar(tree, table)
+            if isinstance(der, Excepcion): return der 
+            if self.op == '<':
+                return izq < der
+            elif self.op == '>':
+                return izq > der
+            elif self.op == '===':
+                return izq == der
+            elif self.op == '!==':
+                return izq != der
+            elif self.op == '<=':
+                return izq <= der
+            elif self.op == '>=':
+                return izq >= der
+            elif self.op == '&&':
+                return izq and der
+            elif self.op == '||':
+                return izq or der
+            elif self.op == '!':
+                return not izq
+            else:
+                return Excepcion("Semantico", "Operacion no valida.", self.fila, self.columna)
 
     def getTipo(self):
         return self.tipo

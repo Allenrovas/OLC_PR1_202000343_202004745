@@ -34,7 +34,7 @@ class If(Abstract):
             for instruccion in self.bloqueElse:
                 result = instruccion.interpretar(arbol, entorno) 
                 if isinstance(result, Excepcion) :
-                    arbol.setExcepcion(result)
+                    arbol.setExcepciones(result)
                 if isinstance(result, Return): return result  
                 if isinstance(result, Break): return result
                 if isinstance(result, Continue): return result  

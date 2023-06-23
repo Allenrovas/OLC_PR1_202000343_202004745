@@ -21,7 +21,7 @@ class Array(Abstract):
                     valores = simbolo.getValor()
                     indices = []
                     for i in self.indice:
-                        indice = i.interpretar(tree, table)
+                        indice = i.interpretar(tree, table) + 1
                         if int(indice) > 0:
                             indices.append(int(indice))
                         else:

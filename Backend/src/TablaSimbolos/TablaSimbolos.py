@@ -19,7 +19,9 @@ class TablaSimbolos:
         self.tabla[simbolo.getID()] = simbolo
     
     def setTablaFuncion(self, simbolo):
+
         self.tabla[simbolo.getID()] = simbolo
+
     
     def actualizarStruct(self, simbolo, valores):
         tablaActual = self
@@ -49,14 +51,14 @@ class TablaSimbolos:
     def actualizarArray(self, simbolo, valores):
         tablaActual = self
         while tablaActual != None:
-            if simbolo.id in tablaActual.tabla:
-                actual = tablaActual.tabla[simbolo.id].getValor()
+            if simbolo.ide in tablaActual.tabla:
+                actual = tablaActual.tabla[simbolo.ide].getValor()
                 Contador = 0
                 for valor in valores:
                     if Contador == (len(valores)-1):
                         try:
                             actual = actual[int(valor)]
-                            if actual.getTipo() == 'any':
+                            if actual.getTipo() == 'any' or simbolo.getTipo() == 'any':
                                 actual.setTipo(simbolo.getTipo())
                                 actual.setValor(simbolo.getValor())
                             elif simbolo.getTipo() == actual.getTipo():
@@ -66,6 +68,12 @@ class TablaSimbolos:
                                 return Excepcion("Semantico", "Tipo de dato diferente en Parametros", str(simbolo.getFila()), str(simbolo.getColumna()))
                         except:
                             return Excepcion("Semantico", "Error en Parametros", str(simbolo.getFila()), str(simbolo.getColumna()))
+                    Contador += 1
+                return None
+            else:
+                tablaActual = tablaActual.anterior
+        return Excepcion("Semantico", "Variable no encontrada.", simbolo.getFila(), simbolo.getColumna())    
+                
 
                         
 

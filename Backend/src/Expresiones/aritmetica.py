@@ -66,6 +66,59 @@ class Aritmetica(Abstract):
                 elif tipoIzq == 'string' and tipoDer == 'string':
                     self.tipo = 'string'
                     return str(str(izq) + str(der))
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'array'or tipoDer =='struct':
+                    
+                    if isinstance(izq, int) or isinstance(izq, float) and isinstance(der, int) or isinstance(der, float):
+                        self.tipo = 'number'
+                        return izq + der
+                    elif isinstance(izq, str) and isinstance(der, str):
+                        self.tipo = 'string'
+                        return str(izq) + str(der)
+                    else:
+                        return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'number':
+                    if isinstance(izq, int) or isinstance(izq, float):
+                        self.tipo = 'number'
+                        return izq + der
+                    else:
+                        return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+                elif tipoIzq == 'number' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(der, int) or isinstance(der, float):
+                        self.tipo = 'number'
+                        return izq + der
+                    else:
+                        return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array' or tipoIzq =='struct' and tipoDer == 'any':
+                    if isinstance(der, int) or isinstance(der, float) and isinstance(izq, int) or isinstance(izq, float):
+                        self.tipo = 'number'
+                        return izq + der
+                    elif isinstance(der, str) and isinstance(izq, str):
+                        self.tipo = 'string'
+                        return str(izq) + str(der)
+                    else:
+                        return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+                elif tipoIzq == 'any' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(izq, int) or isinstance(izq, float) and isinstance(der, int) or isinstance(der, float):
+                        self.tipo = 'number'
+                        return int(izq) + int(der)
+                    elif isinstance(izq, str) and isinstance(der, str):
+                        self.tipo = 'string'
+                        return str(izq) + str(der)
+                    else:
+                        return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array' or tipoIzq =='struct' and tipoDer == 'string':
+                    if isinstance(izq, str):
+                        self.tipo = 'string'
+                        return str(izq) + str(der)
+                    else:
+                        return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+                elif tipoIzq == 'string' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(der, str):
+                        self.tipo = 'string'
+                        return str(izq) + str(der)
+                    else:
+                        return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
+
                 else:
                     return Excepcion("Semantico", "Suma inválida.", self.fila, self.columna)
             # RESTA
@@ -87,6 +140,24 @@ class Aritmetica(Abstract):
                         return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
                 elif tipoIzq == 'any' and tipoDer == 'any':
                     if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                        self.tipo = 'number'
+                        return izq - der
+                    else:
+                        return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'array'or tipoDer =='struct':
+                    if ((isinstance(der,int)) or isinstance(der,float)) and ((isinstance(izq,int)) or isinstance(izq,float)):
+                        self.tipo = 'number'
+                        return izq - der
+                    else:
+                        return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'number':
+                    if isinstance(izq, int) or isinstance(izq, float):
+                        self.tipo = 'number'
+                        return izq - der
+                    else:
+                        return Excepcion("Semantico", "Resta inválida.", self.fila, self.columna)
+                elif tipoIzq == 'number' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(der, int) or isinstance(der, float):
                         self.tipo = 'number'
                         return izq - der
                     else:

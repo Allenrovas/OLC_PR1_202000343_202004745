@@ -18,7 +18,7 @@ class Asignacion_Array(Abstract):
             for x in range (0,len(self.indices)):
                 try:
                     indice = self.indices[x].interpretar(tree,table)
-                    if indice > 0:
+                    if indice >= 0:
                         indices.append(indice)
                     else:
                         return Excepcion("Semantico", "Indice no valido", self.fila, self.columna)

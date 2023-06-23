@@ -151,15 +151,24 @@ def p_declaracion_array(t):
 
 def p_asignacion_array(t):
     'asignacion_array : ID parametros_array IGUAL expresion'
-    t[0] = Asignacion_Array(t[1], t[2], t[4], t.lineno(1), find_column(input, t.slice[1]))
+    t[0] = Asignacion_Array(t[1], t[2], t.lineno(1), find_column(input, t.slice[1]), t[4])
         
 def p_funcion(t):
-    '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
-               | RFUNCTION ID PARIZQ parametros PARDER LLAVEIZQ instrucciones LLAVEDER'''
-    if len(t) == 8:
-        t[0] = Funcion(t[2],None,t[6], t.lineno(1), find_column(input, t.slice[1]))
-    else:
-        t[0] = Funcion(t[2], t[4], t[7], t.lineno(1), find_column(input, t.slice[1]))
+    '''funcion : RFUNCTION ID PARIZQ PARDER DOSPUNTOS tipo LLAVEIZQ instrucciones LLAVEDER
+               | RFUNCTION ID PARIZQ parametros PARDER DOSPUNTOS tipo LLAVEIZQ instrucciones LLAVEDER
+               | RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
+               | RFUNCTION ID PARIZQ parametros PARDER LLAVEIZQ instrucciones LLAVEDER
+               '''
+    if len(t) == 9:
+        if t[4] == ')':
+            t[0] = Funcion(t[2],None,t[8], t[6], t.lineno(1), find_column(input, t.slice[1]))
+        else:
+            t[0] = Funcion(t[2], t[4], t[7], None, t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 11:
+        t[0] = Funcion(t[2], t[4], t[9], t[7], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 8:
+        t[0] = Funcion(t[2], None, t[6], None, t.lineno(1), find_column(input, t.slice[1]))
+    
 
 def p_llamada_funcion(t):
     '''llamada_funcion : ID PARIZQ PARDER
@@ -170,13 +179,17 @@ def p_llamada_funcion(t):
         t[0] = Llamada_Funcion(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_parametros_array(t):
-    'parametros_array : parametros_array CORIZQ expresion CORDER'
+    'parametros_array : parametros_array CORIZQ arrays_1 CORDER'
     t[1].append(t[3])
     t[0] = t[1]
 
 def p_parametros_array_2(t):
-    'parametros_array : CORIZQ expresion CORDER'
+    'parametros_array : CORIZQ arrays_1 CORDER'
     t[0] = [t[2]]
+
+def p_arrays_1(t):
+    'arrays_1 : expresion'
+    t[0] = t[1]
 
 def p_expresion_array(t):
     'expresion : ID parametros_array'
@@ -245,16 +258,25 @@ def p_parametros_2(t):
     'parametros : parametro'
     t[0] = [t[1]]
 
+
+
 def p_parametro(t):
     '''parametro : RLET ID DOSPUNTOS tipo  
                 | ID DOSPUNTOS tipo
-                | ID'''
+                | ID
+                | RLET ID DOSPUNTOS tipo CORIZQ CORDER
+                | ID DOSPUNTOS tipo CORIZQ CORDER
+                '''
     if len(t) == 2:
         t[0] = {'tipo': 'any', 'id': t[1]}
     elif len(t) == 4:
         t[0] = {'tipo': t[3], 'id': t[1]}
-    else:
+    elif len(t) == 5:
         t[0] = {'tipo': t[4], 'id': t[2]}
+    elif len(t) == 7:
+        t[0] = {'tipo': 'array', 'id': t[2]}
+    elif len(t) == 6:
+        t[0] = {'tipo': 'array', 'id': t[1]}
 
 def p_parametros_llamada(t):
     'parametros_llamada : parametros_llamada COMA parametro_ll'
@@ -303,8 +325,17 @@ def p_condicional_if_else_if(t):
     t[0] = If(t[2], t[5], None, t[9], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_ciclo_for(t):
-    'ciclo_for : RFOR PARIZQ declaracion_normal PTCOMA expresion PTCOMA expresion PARDER LLAVEIZQ instrucciones LLAVEDER'
-    t[0] = For(t[3], t[5], t[7], t[10], t.lineno(1), find_column(input, t.slice[1]))
+    '''ciclo_for : RFOR PARIZQ declaracion_normal PTCOMA expresion PTCOMA expresion PARDER LLAVEIZQ instrucciones LLAVEDER
+                | RFOR PARIZQ declaracion_normal ROF expresion PARDER LLAVEIZQ instrucciones LLAVEDER    
+    '''
+    #| RFOR PARIZQ declaracion_normal ROF CORIZQ parametros_llamada CORDER PARDER LLAVEIZQ instrucciones LLAVEDER
+    if len(t) == 12:
+        t[0] = For(t[3], t[5], t[7], t[10], t.lineno(1), find_column(input, t.slice[1]))
+    elif len(t) == 10:
+        t[0] = For(t[3], [t[5]], None, t[8], t.lineno(1), find_column(input, t.slice[1]))
+    #else:
+    #    t[0] = For(t[3], [t[6]], None, t[10], t.lineno(1), find_column(input, t.slice[1]))
+
     
 def p_ciclo_while(t):
     'ciclo_while : RWHILE PARIZQ expresion PARDER LLAVEIZQ instrucciones LLAVEDER'
@@ -315,39 +346,41 @@ def agregarNativas(ast):
 
     nombre = "typeof"
     parametro = [{'tipo':'any', 'id':'typeof##Param1'}]
-    typeof = Typeof(nombre, parametro, instrucciones, -1,-1)
+    typeof = Typeof(nombre, parametro, instrucciones,'any', -1,-1)
     ast.setFunciones(typeof)
 
     nombre = "toUpperCase"
-    parametro = [{'tipo':'string', 'id':'toUpperCase##Param1'}]
-    toUpperCase = ToUpperCase(nombre, parametro, instrucciones, -1,-1)
+    parametro = [{'tipo':'any', 'id':'toUpperCase##Param1'}]
+    toUpperCase = ToUpperCase(nombre, parametro, instrucciones,'any', -1,-1)
     ast.setFunciones(toUpperCase)
 
     nombre = "toLowerCase"
-    parametro = [{'tipo':'string', 'id':'toLower##Param1'}]
-    toLowerCase = ToLowerCase(nombre, parametro, instrucciones, -1,-1)
+    parametro = [{'tipo':'any', 'id':'toLower##Param1'}]
+    toLowerCase = ToLowerCase(nombre, parametro, instrucciones,'any', -1,-1)
     ast.setFunciones(toLowerCase)
 
     nombre = "toString"
     parametro = [{'tipo':'any', 'id':'toString##Param1'}]
-    toString = String(nombre, parametro, instrucciones, -1,-1)
+    toString = String(nombre, parametro, instrucciones,'any', -1,-1)
     ast.setFunciones(toString)
 
     nombre = "toFixed"
-    parametro = [{'tipo':'number', 'id':'toFixed##Param1'},{'tipo':'number', 'id':'toFixed##Param2'}]
-    toFixed = ToFixed(nombre, parametro, instrucciones, -1,-1)
+    parametro = [{'tipo':'any', 'id':'toFixed##Param1'},{'tipo':'any', 'id':'toFixed##Param2'}]
+    toFixed = ToFixed(nombre, parametro, instrucciones,'any', -1,-1)
     ast.setFunciones(toFixed)
 
     nombre = "toExponential"
-    parametro = [{'tipo':'number', 'id':'toExponential##Param1'},{'tipo':'number', 'id':'toExponential##Param2'}]
-    toExponential = ToExponential(nombre, parametro, instrucciones, -1,-1)
+    parametro = [{'tipo':'any', 'id':'toExponential##Param1'},{'tipo':'any', 'id':'toExponential##Param2'}]
+    toExponential = ToExponential(nombre, parametro, instrucciones,'any', -1,-1)
     ast.setFunciones(toExponential)
 
 
 def p_tipo(t):
     '''tipo : RSTRING
             | RNUMBER
-            | RBOOLEAN'''
+            | RBOOLEAN
+            | RANY
+            '''
     t[0] = t[1]
 
 
@@ -402,7 +435,7 @@ def p_expresion_unaria(t):
     '''expresion : MENOS expresion %prec UMENOS
                 | NOT expresion %prec UNOT'''
     if t[1] == '-':
-        t[0] = Aritmetica(0, t[2], '-', t.lineno(1), find_column(input, t.slice[1]))
+        t[0] = Aritmetica(Primitivos('number',int(0), t.lineno(1), find_column(input, t.slice[1])), t[2], '-', t.lineno(1), find_column(input, t.slice[1]))
     elif t[1] == '!':
         t[0] = Relacional_Logica(t[2], None, '!', t.lineno(1), find_column(input, t.slice[1]))
 
@@ -488,12 +521,11 @@ def parse(inp):
     return parser.parse(inp)
 
 entrada = ''' 
-let val1:number = 1;
-let val2:number = 10;
-let val3:number = 2021.2020;
-console.log("Probando declaracion de variables \\n");
-console.log(val1, " ", val2, " ", val3);
-console.log("---------------------------------");
+interface Actor {
+    nombre: string;
+    edad: number;
+}
+
 
 '''
 

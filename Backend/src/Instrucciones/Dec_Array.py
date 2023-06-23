@@ -22,7 +22,7 @@ class Declaracion_Array(Abstract):
                 if isinstance(value,Dict):
                     simbolo = Simbolo(str(self.ide), self.valor.tipo, value['datos'], self.fila, self.columna)
                 else:
-                    simbolo = Simbolo(str(self.ide), self.valor.tipo, value, self.fila, self.columna)
+                    simbolo = Simbolo(str(self.ide), self.tipo, value, self.fila, self.columna)
                 lista.append(simbolo)
             array = Simbolo(str(self.ide), 'array', lista, self.fila, self.columna)
             result = table.setTabla(array)

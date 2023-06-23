@@ -31,10 +31,11 @@ class Llamada_Funcion(Abstract):
                     resultE = expresion.interpretar(arbol, tabla)
                     if isinstance(resultE, Excepcion): return resultE
                     if result.parametros[contador]['tipo'] == expresion.tipo:
-                        simbolo = Simbolo(str(result.parametros[contador]['id']), expresion.tipo, resultE, self.fila, self.columna)
+                        simbolo = Simbolo(str(result.parametros[contador]['id']), result.parametros[contador]['tipo'], resultE, self.fila, self.columna)
+
                         resultT = entorno.setTablaFuncion(simbolo)
                         if isinstance(resultT, Excepcion): return resultT
-                    elif result.parametros[contador]['tipo'] == 'any':
+                    elif result.parametros[contador]['tipo'] == 'any' or expresion.tipo == 'any':
                         simbolo = Simbolo(str(result.parametros[contador]["id"]), expresion.tipo, resultE, self.fila, self.columna)
                         resultT = entorno.setTablaFuncion(simbolo)
                     else:

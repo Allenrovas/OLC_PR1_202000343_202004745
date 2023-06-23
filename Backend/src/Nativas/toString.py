@@ -4,9 +4,9 @@ from ..Instrucciones.funcion import Funcion
 
 class String(Funcion):
 
-    def __init__(self, nombre, parametros, instrucciones, fila, columna):
+    def __init__(self, nombre, parametros, instrucciones,tipoReturn, fila, columna):
         self.tipo = "string"
-        super().__init__(nombre, parametros, instrucciones, fila, columna)
+        super().__init__(nombre, parametros, instrucciones,tipoReturn, fila, columna)
 
     def interpretar(self, arbol, tabla):
         simbolo = tabla.getTabla("toString##Param1")

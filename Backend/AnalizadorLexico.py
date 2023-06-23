@@ -31,6 +31,8 @@ reserved = {
     'break'       :   'RBREAK',
     'continue'    :   'RCONTINUE',
     'return'      :   'RRETURN',
+    'of'          :   'ROF',
+    'void'        :   'RVOID',
 }
 
 tokens  = [
