@@ -33,8 +33,13 @@ class TablaSimbolos:
             self.tabla[id] = simbolo
             return self.tabla[id]
 
-    def getTablaG(self):
-        return self.tabla
+    def getTabla(self, ide):
+        tablaActual = self
+        while tablaActual != None:
+            if ide in tablaActual.tabla:
+                return tablaActual.tabla[ide]
+            tablaActual = tablaActual.anterior
+        return None
 
     def setTablaFuncion(self, simbolo):
         self.tabla[simbolo.getID()] = simbolo

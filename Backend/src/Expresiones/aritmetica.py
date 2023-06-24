@@ -187,6 +187,22 @@ class Aritmetica(Abstract):
                         return izq * der
                     else:
                         return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'array'or tipoDer =='struct':
+                    if ((isinstance(der,int)) or isinstance(der,float)) and ((isinstance(izq,int)) or isinstance(izq,float)):
+                        self.tipo = 'number'
+                        return izq * der
+                    else:
+                        return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'number':
+                    if isinstance(izq, int) or isinstance(izq, float):
+                        self.tipo = 'number'
+                        return izq * der
+                    else:
+                        return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
+                elif tipoIzq == 'number' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(der, int) or isinstance(der, float):
+                        self.tipo = 'number'
+                        return izq * der
                 else:
                     return Excepcion("Semantico", "Multiplicación inválida.", self.fila, self.columna)
             # DIVISION
@@ -196,7 +212,7 @@ class Aritmetica(Abstract):
                         return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
                     self.tipo = 'number'
                     return izq / der
-                if tipoIzq == 'number' and tipoDer == 'any':
+                elif tipoIzq == 'number' and tipoDer == 'any':
                     if isinstance(der, int) or isinstance(der, float):
                         if der == 0:
                             return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
@@ -204,7 +220,7 @@ class Aritmetica(Abstract):
                         return izq / der
                     else:
                         return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
-                if tipoIzq == 'any' and tipoDer == 'number':
+                elif tipoIzq == 'any' and tipoDer == 'number':
                     if isinstance(izq, int) or isinstance(izq, float):
                         if der == 0:
                             return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
@@ -212,7 +228,7 @@ class Aritmetica(Abstract):
                         return izq / der
                     else:
                         return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
-                if tipoIzq == 'any' and tipoDer == 'any':
+                elif tipoIzq == 'any' and tipoDer == 'any':
                     if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
                         if der == 0:
                             return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
@@ -220,6 +236,28 @@ class Aritmetica(Abstract):
                         return izq / der
                     else:
                         return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'array'or tipoDer =='struct':
+                    if ((isinstance(der,int)) or isinstance(der,float)) and ((isinstance(izq,int)) or isinstance(izq,float)):
+                        if der == 0:
+                            return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                        self.tipo = 'number'
+                        return izq / der
+                    else:
+                        return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'number':
+                    if isinstance(izq, int) or isinstance(izq, float):
+                        if der == 0:
+                            return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                        self.tipo = 'number'
+                        return izq / der
+                    else:
+                        return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+                elif tipoIzq == 'number' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(der, int) or isinstance(der, float):
+                        if der == 0:
+                            return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                        self.tipo = 'number'
+                        return izq / der
                 else:
                     return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
             # MODULO
@@ -229,7 +267,7 @@ class Aritmetica(Abstract):
                         return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
                     self.tipo = 'number'
                     return izq % der
-                if tipoIzq == 'number' and tipoDer == 'any':
+                elif tipoIzq == 'number' and tipoDer == 'any':
                     if isinstance(der, int) or isinstance(der, float):
                         if der == 0:
                             return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
@@ -237,7 +275,7 @@ class Aritmetica(Abstract):
                         return izq % der
                     else:
                         return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
-                if tipoIzq == 'any' and tipoDer == 'number':
+                elif tipoIzq == 'any' and tipoDer == 'number':
                     if isinstance(izq, int) or isinstance(izq, float):
                         if der == 0:
                             return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
@@ -245,8 +283,32 @@ class Aritmetica(Abstract):
                         return izq % der
                     else:
                         return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
-                if tipoIzq == 'any' and tipoDer == 'any':
+                elif tipoIzq == 'any' and tipoDer == 'any':
                     if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                        if der == 0:
+                            return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                        self.tipo = 'number'
+                        return izq % der
+                    else:
+                        return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'array'or tipoDer =='struct':
+                    if ((isinstance(der,int)) or isinstance(der,float)) and ((isinstance(izq,int)) or isinstance(izq,float)):
+                        if der == 0:
+                            return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                        self.tipo = 'number'
+                        return izq % der
+                    else:
+                        return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'number':
+                    if isinstance(izq, int) or isinstance(izq, float):
+                        if der == 0:
+                            return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
+                        self.tipo = 'number'
+                        return izq % der
+                    else:
+                        return Excepcion("Semantico", "División inválida.", self.fila, self.columna)
+                elif tipoIzq == 'number' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(der, int) or isinstance(der, float):
                         if der == 0:
                             return Excepcion("Semantico", "División entre 0.", self.fila, self.columna)
                         self.tipo = 'number'
@@ -274,6 +336,24 @@ class Aritmetica(Abstract):
                         return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
                 elif tipoIzq == 'any' and tipoDer == 'any':
                     if (isinstance(der, int) or isinstance(der, float)) and (isinstance(izq, int) or isinstance(izq, float)):
+                        self.tipo = 'number'
+                        return izq ** der
+                    else:
+                        return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'array'or tipoDer =='struct':
+                    if ((isinstance(der,int)) or isinstance(der,float)) and ((isinstance(izq,int)) or isinstance(izq,float)):
+                        self.tipo = 'number'
+                        return izq ** der
+                    else:
+                        return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
+                elif tipoIzq == 'array'or tipoIzq =='struct' and tipoDer == 'number':
+                    if isinstance(izq, int) or isinstance(izq, float):
+                        self.tipo = 'number'
+                        return izq ** der
+                    else:
+                        return Excepcion("Semantico", "Potencia inválida.", self.fila, self.columna)
+                elif tipoIzq == 'number' and tipoDer == 'array' or tipoDer =='struct':
+                    if isinstance(der, int) or isinstance(der, float):
                         self.tipo = 'number'
                         return izq ** der
                     else:

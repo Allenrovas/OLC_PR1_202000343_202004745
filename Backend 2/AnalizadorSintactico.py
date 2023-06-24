@@ -75,10 +75,11 @@ def p_instrucciones_evaluar(t):
                     | r_return PTCOMA
                     | asignacion PTCOMA
                     | ciclo_while PTCOMA
-                    | break PTCOMA
-                    | continue PTCOMA
+                    | r_break PTCOMA
+                    | r_continue PTCOMA
                     | struct PTCOMA
                     | asignacion_struct PTCOMA
+                    | declaracion_array PTCOMA
                     '''
     t[0] = t[1]
 
@@ -92,10 +93,11 @@ def p_instrucciones_evaluar_1(t):
                     | r_return
                     | asignacion
                     | ciclo_while
-                    | break
-                    | continue
+                    | r_break
+                    | r_continue
                     | struct
                     | asignacion_struct
+                    | declaracion_array
                     '''
     t[0] = t[1]
 
@@ -124,7 +126,7 @@ def p_declaracion_normal(t):
             t[0] = Declaracion_Variables(t[2], 'any' , t[4], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_struct(t):
-    'struct : RSTRUCT ID LLAVEIZQ parametros_struct LLAVEDER'
+    'struct : RINTERFACE ID LLAVEIZQ parametros_struct LLAVEDER'
     t[0] = Dec_Struct(t[2], t.lineno(1), find_column(input, t.slice[1]), t[4])
 
 def p_asignacion_struct(t):
@@ -191,16 +193,16 @@ def p_declaracion_struct(t):
     elif len(t) == 2:
         t[0] = Declaracion_Variables(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
 
-def parametros_asignacion_struct(t):
+def p_parametros_asignacion_struct(t):
     'parametros_asignacion_struct : parametros_asignacion_struct PUNTO asignacion_struct_param'
     t[1].append(t[3])
     t[0] = t[1]
 
-def parametros_asignacion_struct_2(t):
+def p_parametros_asignacion_struct_2(t):
     'parametros_asignacion_struct : asignacion_struct_param'
     t[0] = [t[1]]
 
-def asignacion_struct_param(t):
+def p_asignacion_struct_param(t):
     '''asignacion_struct_param : ID'''
     t[0] = t[1]
 
@@ -244,6 +246,14 @@ def p_expresion_funcion(t):
 def p_return(t):
     'r_return : RRETURN expresion'
     t[0] = Return(t[2], t.lineno(1), find_column(input, t.slice[1]))
+
+def p_break(t):
+    'r_break : RBREAK'
+    t[0] = Break(t.lineno(1), find_column(input, t.slice[1]))
+
+def p_continue(t):
+    'r_continue : RCONTINUE'
+    t[0] = Continue(t.lineno(1), find_column(input, t.slice[1]))
 
 
 def p_condicional_ifs(t):
@@ -457,9 +467,7 @@ entrada = '''
 let val1:number = 1;
 let val2:number = 10;
 let val3:number = 2021.2020;
-console.log("Probando declaracion de variables \\n");
-console.log(val1, " ", val2, " ", val3);
-console.log("---------------------------------");
+console.log(val1,val2,val3);
 
 '''
 
@@ -483,7 +491,7 @@ instrucciones = parse(entrada)
 ast = Arbol(instrucciones)
 tsg = TablaSimbolos()
 ast.setTsglobal(tsg)
-agregarNativas(ast)
+#agregarNativas(ast)
 
 '''for instruccion in ast.getInstr():
     if isinstance(instruccion, Funcion):
