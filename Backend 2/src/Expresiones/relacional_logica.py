@@ -4,6 +4,7 @@ from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.return__ import Return
 
+
 class Relacional_Logica(Abstract):
 
     def __init__(self, op_izq, op_der, op, fila, columna):
@@ -17,7 +18,7 @@ class Relacional_Logica(Abstract):
         genAux = Generador()
         generador = genAux.getInstance()
 
-        if (self.op != ('&&' or '||' or '!')):
+        if (self.op != '&&' and self.op != '||' and self.op != '!'):
             generador.addComment("Compilacion de Expresion Relacional")
 
             left = self.op_izq.interpretar(arbol, tabla)
@@ -30,7 +31,7 @@ class Relacional_Logica(Abstract):
                 if isinstance(right, Excepcion): return right
                 if (left.getTipo() == 'number') and (right.getTipo() == 'number'):
                     self.checkLabels()
-                    generador.addIf(left.getValue(), right.getValue(), self.op, self.getTrueLbl())
+                    generador.addIf(left.getValue(), right.getValue(), self.getOperador(), self.getTrueLbl())
                     generador.addGoto(self.getFalseLbl())
                 elif (left.getTipo() == 'string') and (right.getTipo() == 'string'):
                     if self.op == '===' or self.op == '!==':
@@ -93,7 +94,7 @@ class Relacional_Logica(Abstract):
                 if isinstance(lblNot, Excepcion): return lblNot
 
                 if lblNot.getTipo() != 'boolean':
-                    return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.columna)
+                    return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.colum)
                 
                 lbltrue = lblNot.getTrueLbl()
                 lblfalse = lblNot.getFalseLbl()
@@ -107,14 +108,14 @@ class Relacional_Logica(Abstract):
             if isinstance(left, Excepcion): return left
 
             if left.getTipo() != 'boolean':
-                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.columna)
+                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.colum)
 
             generador.putLabel(lblAndOr)
             right = self.op_der.interpretar( arbol, tabla)
             if isinstance(right, Excepcion): return right
 
             if right.getTipo() != 'boolean':
-                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.columna)
+                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.colum)
             
             generador.addComment("Fin de compilacion de Expresion Logica")
             generador.addSpace()
@@ -140,6 +141,10 @@ class Relacional_Logica(Abstract):
             return '1'
         if self.op == '!==':
             return '0'
-        
-    def setTipo(self, tipo):
-        self.tipo = tipo  
+
+    def getOperador(self):
+        if self.op == '===':
+            return '=='
+        if self.op == '!==':
+            return '!='
+        return self.op

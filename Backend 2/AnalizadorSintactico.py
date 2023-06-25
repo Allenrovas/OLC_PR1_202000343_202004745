@@ -286,32 +286,32 @@ def agregarNativas(ast):
     nombre = "typeof"
     parametro = [{'tipo':'any', 'id':'typeof##Param1'}]
     typeof = Typeof(nombre, parametro, instrucciones, -1,-1)
-    ast.setFunciones(typeof)
+    ast.setFunciones('typeof',typeof)
 
-    nombre = "toUpperCase"
+    nombre = "uppercase"
     parametro = [{'tipo':'string', 'id':'toUpperCase##Param1'}]
-    toUpperCase = ToUpperCase(nombre, parametro, instrucciones, -1,-1)
-    ast.setFunciones(toUpperCase)
+    toUpperCase = ToUpperCase(nombre, parametro, instrucciones,'string', -1,-1, )
+    ast.setFunciones('uppercase',toUpperCase)
 
-    nombre = "toLowerCase"
+    nombre = "tolowercase"
     parametro = [{'tipo':'string', 'id':'toLower##Param1'}]
-    toLowerCase = ToLowerCase(nombre, parametro, instrucciones, -1,-1)
-    ast.setFunciones(toLowerCase)
+    toLowerCase = ToLowerCase(nombre, parametro, instrucciones,'string', -1,-1)
+    ast.setFunciones('tolowercase',toLowerCase)
 
     nombre = "toString"
     parametro = [{'tipo':'any', 'id':'toString##Param1'}]
     toString = String(nombre, parametro, instrucciones, -1,-1)
-    ast.setFunciones(toString)
+    ast.setFunciones('tostring',toString)
 
     nombre = "toFixed"
     parametro = [{'tipo':'number', 'id':'toFixed##Param1'},{'tipo':'number', 'id':'toFixed##Param2'}]
     toFixed = ToFixed(nombre, parametro, instrucciones, -1,-1)
-    ast.setFunciones(toFixed)
+    ast.setFunciones('tofixed',toFixed)
 
     nombre = "toExponential"
     parametro = [{'tipo':'number', 'id':'toExponential##Param1'},{'tipo':'number', 'id':'toExponential##Param2'}]
     toExponential = ToExponential(nombre, parametro, instrucciones, -1,-1)
-    ast.setFunciones(toExponential)
+    ast.setFunciones('toexponential',toExponential)
 
 
 def p_tipo(t):
@@ -445,11 +445,18 @@ def p_error(t):
 
 
 '''
+
 def p_error(p):
     if p:
         print("Syntax error at '%s'" % p.value)
     else:
         print("Syntax error at EOF")
+        
+        
+        let val1:number = 1;
+let val2:number = 10;
+let val3:number = 2021.2020;
+console.log(val1,val2,val3);
 '''
 
 
@@ -464,11 +471,8 @@ def parse(inp):
     return parser.parse(inp)
 
 entrada = ''' 
-let val1:number = 1;
-let val2:number = 10;
-let val3:number = 2021.2020;
-console.log(val1,val2,val3);
-
+let a:string = "ES CINE CABALLEROS";
+console.log(tolowercase(a));
 '''
 
 
@@ -481,6 +485,7 @@ def test_lexer(lexer):
 
 
 #lexer.input(entrada)
+
 #test_lexer(lexer)
 
 genAux = Generador()
@@ -491,7 +496,7 @@ instrucciones = parse(entrada)
 ast = Arbol(instrucciones)
 tsg = TablaSimbolos()
 ast.setTsglobal(tsg)
-#agregarNativas(ast)
+agregarNativas(ast)
 
 '''for instruccion in ast.getInstr():
     if isinstance(instruccion, Funcion):

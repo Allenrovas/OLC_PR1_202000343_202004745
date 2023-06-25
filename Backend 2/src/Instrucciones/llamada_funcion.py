@@ -10,6 +10,7 @@ from ..Instrucciones._return import Return
 
 
 
+
 class Llamada_Funcion(Abstract):
 
     def __init__(self, nombre, parametros, fila, columna):
@@ -31,11 +32,18 @@ class Llamada_Funcion(Abstract):
             size = tabla.size
 
             for parametros in self.parametros:
-                value = parametros.interpretar(arbol, tabla)
-                if isinstance(value, Excepcion):
-                    return value
-                paramValues.append(value)
-                temps.append(value.getValue())
+                if isinstance(parametros, Llamada_Funcion):
+                    self.guardarTemps(generador, tabla, temps)
+                    a = parametros.interpretar(arbol, tabla)
+                    if isinstance(a, Excepcion): return a
+                    paramValues.append(a)
+                    self.recuperarTemps(generador, tabla, temps)
+                else:
+                    value = parametros.interpretar(arbol, tabla)
+                    if isinstance(value, Excepcion):
+                        return value
+                    paramValues.append(value)
+                    temps.append(value.getValue())
             
             temp = generador.addTemp()
 
@@ -53,7 +61,7 @@ class Llamada_Funcion(Abstract):
                         return Excepcion("Semantico", f"El tipo de dato de los parametros no coincide con la funcion {self.nombre}", self.fila, self.columna)
 
             generador.newEnv(size)
-            # self.getFuncion(funcion, arbol, tabla) # Sirve para llamar a una funcion nativa
+            self.getFuncion(generator=generador) # Sirve para llamar a una funcion nativa
             generador.callFun(funcion.nombre)
             generador.getStack(temp,'P')
             generador.retEnv(size)
@@ -75,3 +83,34 @@ class Llamada_Funcion(Abstract):
                 ret.falseLbl = self.falseLbl
                 generador.addComment('Fin de recuperacion de booleano')
                 return ret
+
+    def guardarTemps(self, generador, tabla, tmp2):
+        generador.addComment('Guardando temporales')
+        tmp = generador.addTemp()
+        for tmp1 in tmp2:
+            generador.addExp(tmp, 'P', tabla.size, '+')
+            generador.setStack(tmp, tmp1)
+            tabla.size += 1
+        generador.addComment('Fin de guardado de temporales')
+    
+    def recuperarTemps(self, generador, tabla, tmp2):
+        generador.addComment('Recuperando temporales')
+        tmp = generador.addTemp()
+        for tmp1 in tmp2:
+            tabla.size -= 1
+            generador.addExp(tmp, 'P', tabla.size, '+')
+            generador.getStack(tmp1, tmp)
+        generador.addComment('Fin de recuperacion de temporales')
+
+    def getFuncion(self, generator):
+        if self.nombre == 'length':
+            generator.fLength()
+        elif self.nombre == 'trunc':
+            generator.fTrunc()
+        elif self.nombre == 'float':
+            generator.fFloat()
+        elif self.nombre == 'uppercase':
+            generator.fUpperCase()
+        elif self.nombre == 'tolowercase':
+            generator.fLowerCase()
+        return

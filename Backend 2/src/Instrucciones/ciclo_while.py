@@ -19,4 +19,4 @@ class While(Abstract):
         generator = genAux.getInstance()
         generator.addComment("Compilacion de While")
 
-        while True:
+       # while True:

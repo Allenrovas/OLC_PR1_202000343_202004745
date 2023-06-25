@@ -6,6 +6,7 @@ from ..TablaSimbolos.generador import Generador
 from ..Abstract.return__ import Return
 
 
+
 class Imprimir(Abstract):
 
     def __init__(self, expresion, fila, columna):
@@ -17,7 +18,6 @@ class Imprimir(Abstract):
         generator = genAux.getInstance()
 
         for valor in self.expresion:
-
             value = valor.interpretar(tree, table)
 
             if isinstance(value, Excepcion): return value
@@ -52,4 +52,4 @@ class Imprimir(Abstract):
 
                 generator.putLabel(tempLbl)
 
-            generator.addPrint('c', 10)
+        generator.addPrint('c', 10)
