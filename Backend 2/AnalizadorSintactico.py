@@ -33,6 +33,9 @@ import sys
 from src.TablaSimbolos.generador import Generador
 sys.setrecursionlimit(10000000)
 
+erroressintacticos = []
+
+
 
 precedence = (
     ('left','OR'),
@@ -433,14 +436,14 @@ def p_error(t):
     try:
         print(" Error sintáctico en '%s'" % t.value)
         #errores.append(Excepcion("Lexico","Error léxico: " + t.value[0],t.lexer.lineno, find_column(input, t)))
-        errores.append(Excepcion("Sintactico","Error sintáctico: " + t.value,t.lineno, find_column(input, t)))
+        erroressintacticos.append(Excepcion("Sintactico","Error sintáctico: " + t.value,t.lineno, find_column(input, t)))
     except:
         print("")
     if t:
         print("Token :",t, "\n")
         parser.errok()
     else:
-        errores.append(Excepcion("Sintactico","Error sintáctico: fin de archivo inesperado",0,0))
+        erroressintacticos.append(Excepcion("Sintactico","Error sintáctico: fin de archivo inesperado",0,0))
         print("Fin del Archivo")
 
 
@@ -470,51 +473,51 @@ def parse(inp):
     lexer.lineno = 1
     return parser.parse(inp)
 
-entrada = ''' 
-let a:string = "ES CINE CABALLEROS";
-console.log(tolowercase(a));
-'''
+# entrada = ''' 
+# let a:string = "ES CINE CABALLEROS";
+# console.log(tolowercase(a));
+# '''
 
 
-def test_lexer(lexer):
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break  # No more input
-        print(tok)
+# def test_lexer(lexer):
+#     while True:
+#         tok = lexer.token()
+#         if not tok:
+#             break  # No more input
+#         print(tok)
 
 
-#lexer.input(entrada)
+# #lexer.input(entrada)
 
-#test_lexer(lexer)
+# #test_lexer(lexer)
 
-genAux = Generador()
-genAux.cleanAll(); # Limpia todos los archivos anteriores
-generador = genAux.getInstance()
+# genAux = Generador()
+# genAux.cleanAll(); # Limpia todos los archivos anteriores
+# generador = genAux.getInstance()
 
-instrucciones = parse(entrada)
-ast = Arbol(instrucciones)
-tsg = TablaSimbolos()
-ast.setTsglobal(tsg)
-agregarNativas(ast)
+# instrucciones = parse(entrada)
+# ast = Arbol(instrucciones)
+# tsg = TablaSimbolos()
+# ast.setTsglobal(tsg)
+# agregarNativas(ast)
 
-'''for instruccion in ast.getInstr():
-    if isinstance(instruccion, Funcion):
-        ast.setFunciones(instruccion)'''
+# '''for instruccion in ast.getInstr():
+#     if isinstance(instruccion, Funcion):
+#         ast.setFunciones(instruccion)'''
 
-for instruccion in ast.getInstr():
-    if not(isinstance(instruccion, Funcion)):
-        value = instruccion.interpretar(ast,tsg)
-        if isinstance(value, Excepcion):
-            ast.setExcepciones(value)
-        if isinstance(value, Break):
-            error = Excepcion("Semantico", "Sentencia Break fuera de ciclo", instruccion.fila, instruccion.columna)
-            ast.setExcepciones(error)
-        if isinstance(value, Continue):
-            error = Excepcion("Semantico", "Sentencia Continue fuera de ciclo", instruccion.fila, instruccion.columna)
-            ast.setExcepciones(error)
-        if isinstance(value, Return):
-            error = Excepcion("Semantico", "Sentencia Return fuera de ciclo", instruccion.fila, instruccion.columna)
-            ast.setExcepciones(error)
+# for instruccion in ast.getInstr():
+#     if not(isinstance(instruccion, Funcion)):
+#         value = instruccion.interpretar(ast,tsg)
+#         if isinstance(value, Excepcion):
+#             ast.setExcepciones(value)
+#         if isinstance(value, Break):
+#             error = Excepcion("Semantico", "Sentencia Break fuera de ciclo", instruccion.fila, instruccion.columna)
+#             ast.setExcepciones(error)
+#         if isinstance(value, Continue):
+#             error = Excepcion("Semantico", "Sentencia Continue fuera de ciclo", instruccion.fila, instruccion.columna)
+#             ast.setExcepciones(error)
+#         if isinstance(value, Return):
+#             error = Excepcion("Semantico", "Sentencia Return fuera de ciclo", instruccion.fila, instruccion.columna)
+#             ast.setExcepciones(error)
 
-print(generador.getCode())
+# print(generador.getCode())

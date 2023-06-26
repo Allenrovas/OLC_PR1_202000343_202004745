@@ -19,6 +19,8 @@ function NavBar() {
                 </Link>
                 <Link to="/reportes" style={{textDecoration: "none"}}> <a class="nav-link active" aria-current="reportes">Reportes</a>
                 </Link>
+                <Link to="/reportesc3d" style={{textDecoration: "none"}}> <a class="nav-link active" aria-current="reportesc3d">Reportes C3D</a>
+                </Link>
             </ul>
             </div>
         </div>

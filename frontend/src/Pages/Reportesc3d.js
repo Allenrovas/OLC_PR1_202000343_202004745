@@ -4,28 +4,27 @@ import Service from "../Services/Service.js";
 import Graphviz from "graphviz-react";
 import { useState } from "react";
 
-function Reportes() {
+function Reportesc3d() {
   const [graphCode, setGraphCode] = React.useState("");
   const [arregloErrores, setArregloErrores] = useState([]);
   const [arregloSimbolos, setArregloSimbolos] = useState([]);
   const [tablaSimbolosVisible, setTablaSimbolosVisible] = useState(false);
   const [tablaErroresVisible, setTablaErroresVisible] = useState(false);
-
-
+  
   
   const handleGraphClick = (url) => {
     Service.imagen(url)
     .then((response) => {
+      
       setGraphCode(response.respuesta);
       console.log(response);
     
     })
+    
   }
 
-
-
   const reporteErrores = () => {
-    Service.reportes()
+    Service.reportesc3d()
     .then((response) => {
       setArregloErrores([]);
       if(response.Errores !== undefined){
@@ -38,7 +37,7 @@ function Reportes() {
     }
 
     const reporteTabla = () => {
-      Service.reportes()
+      Service.reportesc3d()
       .then((response) => {
         setArregloSimbolos([]);
         if(response.Simbolos !== undefined){
@@ -50,16 +49,16 @@ function Reportes() {
       })
       }
 
+
  
 
   return (
     <>
       <NavBar />
-      <h1>Proyecto 1 - Reportes PyTypeCraft - OLC2 </h1>
+      <h1>Proyecto 2 - Reportes PyTypeCraft - OLC2 </h1>
       <div class ="container" >
         <button onClick={reporteErrores} type="button" class="btn btn-primary">Reporte de Errores</button>
         <button onClick={reporteTabla} type="button" class="btn btn-primary">Reporte de Tabla de Símbolos</button>
-        <button type="button" class="btn btn-primary">Reporte de AST</button>
       </div>
       {tablaErroresVisible && (
         <table>
@@ -117,13 +116,9 @@ function Reportes() {
         zoomable
       />
     )}
-    
       </div>
-
-   
-
     </>
   );
 }
 
-export default Reportes;
+export default Reportesc3d;

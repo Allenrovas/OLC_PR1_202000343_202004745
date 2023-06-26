@@ -152,7 +152,7 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 # Caracteres ignorados
-t_ignore = " \t"
+t_ignore = " \t \r"
 
 #Error
 def t_error(t):
