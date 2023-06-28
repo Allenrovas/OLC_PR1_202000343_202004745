@@ -110,7 +110,7 @@ def p_imprimir(t):
 #console.log()
 def p_asignacion(t):
     'asignacion : ID IGUAL expresion'
-    t[0] = Asignacion(t[1], t[3], t.lineno(1), find_column(input, t.slice[1]))
+    t[0] = Declaracion_Variables(t[1], None, t[3], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_declaracion_normal(t):
     '''declaracion_normal : RLET ID DOSPUNTOS tipo IGUAL expresion
@@ -375,7 +375,7 @@ def p_expresion_unaria(t):
     '''expresion : MENOS expresion %prec UMENOS
                 | NOT expresion %prec UNOT'''
     if t[1] == '-':
-        t[0] = Aritmetica(0, t[2], '-', t.lineno(1), find_column(input, t.slice[1]))
+        t[0] = Aritmetica(Primitivos('number',int(0), t.lineno(1), find_column(input, t.slice[1])), t[2], '-', t.lineno(1), find_column(input, t.slice[1]))
     elif t[1] == '!':
         t[0] = Relacional_Logica(t[2], None, '!', t.lineno(1), find_column(input, t.slice[1]))
 

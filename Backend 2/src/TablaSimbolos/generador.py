@@ -24,6 +24,7 @@ class Generador:
         self.boundError = False
         self.upper = False
         self.lower = False
+        self.potencia = False
 
         # Listas de imports
         self.imports = []
@@ -40,12 +41,21 @@ class Generador:
 
         # Codigo
         self.codigo = ""
+        self.funcs = ''
+        self.natives = ''
+        self.inFunc = False
+        self.inNatives = False
 
         # Lista de temporales
         self.temps = []
 
         # Lista de Nativas
         self.printString = False
+        self.compareString = False
+        self.boundError = False
+        self.upper = False
+        self.lower = False
+        self.potencia = False
 
         self.imports = []
         self.imports2 =['fmt', 'math']
@@ -153,6 +163,9 @@ class Generador:
     
     def addAsig(self, result, left):
         self.codeIn(f'{result} = {left};\n')
+
+    def addModulo(self, result, left, right):
+        self.codeIn(f'{result} = math.Mod({left}, {right});\n')
 
     ###############
     # FUNCS
@@ -386,6 +399,55 @@ class Generador:
         self.setStack('P', t1)
         self.addEndFunc()
 
+        self.inNatives = False
+
+    def fPotencia(self):
+        if self.potencia:
+            return
+        self.potencia = True
+        self.inNatives = True
+        self.addBeginFunc('potencia')
+
+        # Labels a utilizar
+        Lbl0 = self.newLabel()
+        Lbl1 = self.newLabel()
+        Lbl2 = self.newLabel()
+        Lbl3 = self.newLabel()
+
+        # Temporales a utilizar
+        t1 = self.addTemp()
+        t2 = self.addTemp()
+        t3 = self.addTemp()
+        t4 = self.addTemp()
+
+        #Escritura del codigo
+        self.addExp(t2, 'P', '1','+')
+        self.getStack(t1, t2)
+        self.addExp(t3,t1,'','')
+        self.addExp(t4,t1,'','')
+        self.addExp(t2,'P','2','+')
+        self.getStack(t1,t2)
+        self.addIf(t1,'0','==', Lbl1)
+        self.putLabel(Lbl2)
+        self.addIdent()
+        self.addIf(t1, '1','<=',Lbl0)
+        self.addIdent()
+        self.addExp(t3, t3,t4,'*')
+        self.addIdent()
+        self.addExp(t1,t1,'1', '-')
+        self.addIdent()
+        self.addGoto(Lbl2)
+        self.putLabel(Lbl0)
+        self.addIdent()
+        self.setStack('P', t3)
+        self.addIdent()
+        self.addGoto(Lbl3)
+        self.putLabel(Lbl1)
+        self.addIdent()
+        self.setStack('P', '1')
+        self.putLabel(Lbl3)
+        self.addEndFunc()
+        self.addSpace()
         self.inNatives = False
 
     def fLowerCase(self):

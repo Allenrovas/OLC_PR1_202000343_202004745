@@ -20,36 +20,71 @@ class Declaracion_Variables(Abstract):
         genAux = Generador()
         generator = genAux.getInstance()
 
-        generator.addComment('Compilacion de valor de variable')
-        value = self.valor.interpretar(arbol, tabla)
-        if isinstance(value, Excepcion): return value # Analisis Semantico -> Error
-        # Verificacion de tipos
-        if str(self.tipo) == str(self.valor.tipo):
-            inHeap = value.getTipo() == 'string' or value.getTipo() == 'interface'
-            simbolo = tabla.setTabla(self.ide, value.getTipo(), inHeap , self.find)
+        if self.tipo != None:
+            generator.addComment('Compilacion de valor de variable')
+            value = self.valor.interpretar(arbol, tabla)
+            if isinstance(value, Excepcion): return value # Analisis Semantico -> Error
+            # Verificacion de tipos
+            if str(self.tipo) == str(self.valor.tipo):
+                inHeap = value.getTipo() == 'string' or value.getTipo() == 'interface'
+                simbolo = tabla.setTabla(self.ide, value.getTipo(), inHeap , self.find)
 
-        else:
-            generator.addComment('Error, tipo de dato diferente declarado.')
-            result = Excepcion("Semantico", "Tipo de dato diferente declarado.", self.fila, self.columna)
-            return result
-        
-        tempPos = simbolo.pos
-        if not simbolo.isGlobal:
-            tempPos = generator.addTemp()
-            generator.addExp(tempPos, 'P', simbolo.pos, '+')
-        
-        if value.getTipo() == 'boolean':
-            tempLbl = generator.newLabel()
+            else:
+                generator.addComment('Error, tipo de dato diferente declarado.')
+                result = Excepcion("Semantico", "Tipo de dato diferente declarado.", self.fila, self.columna)
+                return result
             
-            generator.putLabel(value.trueLbl)
-            generator.setStack(tempPos, "1")
+            tempPos = simbolo.pos
+            if not simbolo.isGlobal:
+                tempPos = generator.addTemp()
+                generator.addExp(tempPos, 'P', simbolo.pos, '+')
             
-            generator.addGoto(tempLbl)
+            if value.getTipo() == 'boolean':
+                tempLbl = generator.newLabel()
+                
+                generator.putLabel(value.trueLbl)
+                generator.setStack(tempPos, "1")
+                
+                generator.addGoto(tempLbl)
 
-            generator.putLabel(value.falseLbl)
-            generator.setStack(tempPos, "0")
+                generator.putLabel(value.falseLbl)
+                generator.setStack(tempPos, "0")
 
-            generator.putLabel(tempLbl)
+                generator.putLabel(tempLbl)
+            else:
+                generator.setStack(tempPos, value.value)
+            generator.addComment('Fin de compilacion de valor de variable')
         else:
-            generator.setStack(tempPos, value.value)
-        generator.addComment('Fin de compilacion de valor de variable')
+
+            generator.addComment('Compilacion de valor de variable')
+            #Variable que estamos asignando
+            val = self.valor.interpretar(arbol, tabla)
+            if isinstance(val, Excepcion): return val # Analisis Semantico -> Error
+            
+            simbolo = tabla.setTabla(self.ide, val.getTipo(), (val.type == 'string'or val.type == 'struct' or val.type == 'array'), self.find)
+
+            tempPos = simbolo.getPos()
+            if not simbolo.isGlobal:
+                tempPos = generator.addTemp()
+                generator.addExp(tempPos, 'P', simbolo.getPos(), '+')
+            
+            if val.type == 'boolean':
+                tempLbl = generator.newLabel()
+                
+                generator.putLabel(val.trueLbl)
+                generator.setStack(tempPos, "1")
+                
+                generator.addGoto(tempLbl)
+
+                generator.putLabel(val.falseLbl)
+                generator.setStack(tempPos, "0")
+
+                generator.putLabel(tempLbl)
+            else:
+                generator.setStack(tempPos, val.value)
+            generator.addComment('Fin de compilacion de valor de variable')
+            generator.addSpace()
+
+            return None
+
+

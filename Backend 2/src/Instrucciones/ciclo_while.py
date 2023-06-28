@@ -1,11 +1,11 @@
-from ..TablaSimbolos.Simbolo import Simbolo
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 from ..Instrucciones.Break import Break
 from ..Instrucciones.Continue import Continue
-from ..Instrucciones._return import Return
+from ..Instrucciones._return import Return as ReturnInstruccion
 from ..TablaSimbolos.generador import Generador
+from ..Abstract.return__ import *
 
 class While(Abstract):
 
@@ -21,7 +21,7 @@ class While(Abstract):
 
         while True:
             print("WHILE")
-            if self.getTipo():
+            if self.getTipo() == 'boolean':
                 lb10 = generator.newLabel()
                 generator.putLabel(lb10)
                 condicion = self.condicion.interpretar(arbol, tabla)
@@ -44,7 +44,7 @@ class While(Abstract):
                        generator.addGoto(condicion.getFalseLbl())
                     if isinstance(value, Continue):
                         generator.addGoto(lb10)
-                    if isinstance(value, Return):
+                    if isinstance(value, ReturnInstruccion):
                         if entorno.returnLbl != '':
                             if value.getTrueLbl() == '':
                                 generator.addComment('Resultado a retornar en la funcion')
@@ -68,5 +68,21 @@ class While(Abstract):
                 generator.addComment('Fin del While')
             break                    
     
-    def getTipo():
-        return True
+        if self.condicion.tipo == '===':
+            return True
+        elif self.condicion.tipo == '!==':
+            return True
+        elif self.condicion.tipo == '<':
+            return True
+        elif self.condicion.tipo == '>':
+            return True
+        elif self.condicion.tipo == '<=':
+            return True
+        elif self.condicion.tipo == '>=':
+            return True
+        elif self.condicion.tipo == '&&':
+            return True
+        elif self.condicion.tipo == '||':
+            return True
+        else:
+            return False

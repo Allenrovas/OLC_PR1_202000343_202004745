@@ -28,6 +28,7 @@ function Analisis() {
 
 
   const handlerClickc3d = () => {
+    
 
     if (value === "") {
       alert("No hay nada que analizar");

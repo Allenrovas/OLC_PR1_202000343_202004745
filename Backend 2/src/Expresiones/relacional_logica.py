@@ -59,6 +59,7 @@ class Relacional_Logica(Abstract):
                         result.setTrueLbl(self.trueLbl)
                         result.setFalseLbl(self.falseLbl)
                         return result
+                    
                 
 
             generador.addComment("Fin de compilacion de Expresion Relacional")

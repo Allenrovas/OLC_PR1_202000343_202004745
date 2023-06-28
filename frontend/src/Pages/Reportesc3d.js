@@ -61,7 +61,7 @@ function Reportesc3d() {
         <button onClick={reporteTabla} type="button" class="btn btn-primary">Reporte de Tabla de Símbolos</button>
       </div>
       {tablaErroresVisible && (
-        <table>
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>Tipo</th>
@@ -83,7 +83,7 @@ function Reportesc3d() {
         </table>
       )}
             {tablaSimbolosVisible && (
-        <table>
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>Nombre</th>

@@ -1,11 +1,11 @@
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
-from ..Instrucciones._return import Return
+from ..Instrucciones._return import Return as ReturnInstruccion
 from ..Instrucciones.Break import Break
 from ..Instrucciones.Continue import Continue
-from ..Instrucciones._return import Return
 from ..TablaSimbolos.generador import Generador
+from ..Abstract.return__ import *
 
 
 class If(Abstract):
@@ -35,16 +35,25 @@ class If(Abstract):
                 result = instruccion.interpretar(arbol, entorno)
                 if isinstance(result, Excepcion):
                     arbol.setExcepciones(result)
-                # if isinstance(result, Break):
-                #     if tabla.breakLbl != '':
-                #         generador.addGoto(tabla.breakLbl)
-                #     else:
-                #         salir = generador.newLabel()
-                #         generador.addGoto(salir)
-                #         generador.putLabel(result.getLbl())
-                #         generador.putLabel(salir)
-                #         return Excepcion("Semantico", "Sentencia break fuera de ciclo", self.fila, self.columna)
-                if isinstance(result, Return):
+                if isinstance(result, Break):
+                    if tabla.breakLbl != '':
+                        generador.addGoto(tabla.breakLbl)
+                    else:
+                        salir = generador.newLabel()
+                        generador.addGoto(salir)
+                        generador.putLabel(result.getLbl())
+                        generador.putLabel(salir)
+                        return Excepcion("Semantico", "Sentencia break fuera de ciclo", self.fila, self.columna)
+                if isinstance(result, Continue):
+                    if tabla.continueLbl != '':
+                        generador.addGoto(tabla.continueLbl)
+                    else:
+                        salir = generador.newLabel()
+                        generador.addGoto(salir)
+                        generador.putLabel(result.getLbl())
+                        generador.putLabel(salir)
+                        return Excepcion("Semantico", "Sentencia continue fuera de ciclo", self.fila, self.columna)
+                if isinstance(result, ReturnInstruccion):
                     if entorno.returnLbl != '':
                         generador.addComment('Resultado a retornar en la funcion')
                         if result.getTrueLbl() == '':
@@ -73,7 +82,19 @@ class If(Abstract):
                     result = instruccion.interpretar(arbol, entorno)
                     if isinstance(result, Excepcion):
                         arbol.setExcepciones(result)
-                    if isinstance(result, Return):
+                    if isinstance(result, Break):
+                        if tabla.breakLbl != '':
+                            generador.addGoto(tabla.breakLbl)
+                        else:
+                            generador.putLabel(salir)
+                            return Excepcion("Semantico", "Sentencia break fuera de ciclo", self.fila, self.columna)
+                    if isinstance(result, Continue):
+                        if tabla.continueLbl != '':
+                            generador.addGoto(tabla.continueLbl)
+                        else:
+                            generador.putLabel(salir)
+                            return Excepcion("Semantico", "Sentencia continue fuera de ciclo", self.fila, self.columna)
+                    if isinstance(result, ReturnInstruccion):
                         generador.addComment('Resultado a retornar en la funcion')
                         if result.getTrueLbl() == '':
                             generador.setStack('P', result.getValor())

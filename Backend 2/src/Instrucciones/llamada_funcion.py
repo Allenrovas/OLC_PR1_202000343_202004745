@@ -1,4 +1,3 @@
-
 from ..TablaSimbolos.Simbolo import Simbolo
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
@@ -69,7 +68,7 @@ class Llamada_Funcion(Abstract):
             generador.addSpace()
 
             if funcion.getTipo() != 'boolean':
-                return Return2(temp, funcion.getTipo(), True)
+                return Return(temp, funcion.getTipo(), True)
             else:
                 generador.addComment('Recuperacion de booleano')
                 if self.trueLbl == '':

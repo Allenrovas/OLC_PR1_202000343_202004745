@@ -100,6 +100,9 @@ def Analizador():
         Excepciones = ast.getExcepciones()  
         
         consola = generador.getCode()     
+        
+    
+        #Simbolos = ast.getTsglobal().getTablaG()
     except:
         return("Error C3D")
     
@@ -112,7 +115,8 @@ def Reportes():
     global Excepciones
 
     listasimbolos = []
-    for simbolo in Simbolos:
+    
+    '''for simbolo in Simbolos:
         aux = Simbolos[simbolo].getValor()
         tipo = Simbolos[simbolo].getTipo()
         tipo = getTipo(tipo)
@@ -147,7 +151,7 @@ def Reportes():
             listaaux.append(str(fila))
             listaaux.append(str(columna))
             listasimbolos.append(listaaux)   
-            
+      '''      
             
     auxerrores = []
     for x in Excepciones:

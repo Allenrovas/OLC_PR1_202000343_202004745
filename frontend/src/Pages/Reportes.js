@@ -62,7 +62,7 @@ function Reportes() {
         <button type="button" class="btn btn-primary">Reporte de AST</button>
       </div>
       {tablaErroresVisible && (
-        <table>
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>Tipo</th>
@@ -84,7 +84,7 @@ function Reportes() {
         </table>
       )}
             {tablaSimbolosVisible && (
-        <table>
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>Nombre</th>

@@ -2,6 +2,7 @@ from ..TablaSimbolos.Excepcion import Excepcion
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.return__ import Return
+from ..TablaSimbolos.Simbolo import Simbolo
 
 
 class Identificador(Abstract):

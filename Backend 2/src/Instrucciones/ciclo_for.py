@@ -1,10 +1,11 @@
-from ..TablaSimbolos.Simbolo import Simbolo
 from ..Abstract.abstract import Abstract
-from ..TablaSimbolos.Excepcion import Excepcion
-from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
+from ..Abstract.return__ import Return
+from ..Instrucciones._return import Return as ReturnFuncion
 from ..Instrucciones.Break import Break
 from ..Instrucciones.Continue import Continue
-from ..Instrucciones._return import Return
+from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
+from ..TablaSimbolos.Simbolo import Simbolo
+from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.generador import Generador
 
 
@@ -16,18 +17,8 @@ class For(Abstract):
         self.aumento = aumento
         self.bloqueFor = bloqueFor
         super().__init__(fila, columna)
- 
+    
     def interpretar(self, arbol, tabla):
-        genAux = Generador()
-        generador = genAux.getInstance()
-        generador.addComment('Compilacion de un for')
-
-        bandera = True
-        entorno = tabla
-        if tabla.findTabla(self.inicio.ide):
-            bandera = False
-
-
         nuevaTabla = TablaSimbolos(tabla)  # NUEVO ENTORNO
 
         inicio = self.inicio.interpretar(arbol, nuevaTabla)
@@ -60,6 +51,5 @@ class For(Abstract):
             if self.condicion.tipo != 'boolean':
                 return Excepcion("Semantico", "Tipo de dato no booleano en FOR.", self.fila, self.columna)
         return None
-            
 
 

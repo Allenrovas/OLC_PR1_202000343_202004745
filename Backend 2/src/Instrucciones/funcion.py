@@ -1,4 +1,4 @@
-from ..Instrucciones._return import Return
+from ..Instrucciones._return import Return as ReturnExp
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
@@ -52,7 +52,7 @@ class Funcion(Abstract):
             value = instruccion.interpretar(arbol, entorno)
             if isinstance(value, Excepcion):
                 arbol.setExcepcion(value)
-            if isinstance(value, Return):
+            if isinstance(value, ReturnExp):
                 if value.getTrueLbl() == '':
                     generador.addComment('Resultado a retornar en la funcion')
                     generador.setStack('P',value.getValor())
