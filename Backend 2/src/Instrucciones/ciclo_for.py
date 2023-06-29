@@ -1,4 +1,4 @@
-from ..TablaSimbolos.simbolo import Simbolo
+from ..TablaSimbolos.Simbolo import Simbolo
 from ..Instrucciones._return import Return
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.abstract import Abstract

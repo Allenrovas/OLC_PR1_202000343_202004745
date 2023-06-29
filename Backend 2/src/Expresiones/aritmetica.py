@@ -16,6 +16,8 @@ class Aritmetica(Abstract):
     def interpretar(self, tree, table):
         genAux = Generador()
         generador = genAux.getInstance()
+        
+        
         temporal = ''
         operador = ''
         der = ''

@@ -1,4 +1,4 @@
-from ..TablaSimbolos.simbolo import Simbolo
+from ..TablaSimbolos.Simbolo import Simbolo
 from ..TablaSimbolos.Excepcion import Excepcion
 from typing import List
 from ..Abstract.abstract import Abstract
