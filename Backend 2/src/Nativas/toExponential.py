@@ -9,10 +9,10 @@ class ToExponential(Funcion):
 
     def interpretar(self, arbol, tabla):
         simbolo = tabla.getTabla("toExponential##Param1")
-        if simbolo == None: return Excepcion("Semantico", "No se encontro el parametro de toLowerCase", self.fila, self.columna)
+        if simbolo == None: return Excepcion("Semantico", "No se encontro el parametro de ToExponential", self.fila, self.columna)
 
         simbolo2 = tabla.getTabla("toExponential##Param2")
-        if simbolo2 == None: return Excepcion("Semantico", "No se encontro el parametro de toLowerCase", self.fila, self.columna)
+        if simbolo2 == None: return Excepcion("Semantico", "No se encontro el parametro de ToExponential", self.fila, self.columna)
 
 
 

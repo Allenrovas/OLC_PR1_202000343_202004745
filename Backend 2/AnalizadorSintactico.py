@@ -1,8 +1,8 @@
  #Precedencia para las operaciones
-from src.Instrucciones.Dec_Array import Declaracion_Array
+from src.Instrucciones.Dec_Array import Declaracion_Arrays
 from src.Instrucciones.AsignacionStruct import AsignacionStruct
 from src.Expresiones.identificador import Identificador
-from src.TablaSimbolos.Arbol import Arbol
+from src.TablaSimbolos.arbol import Arbol
 from src.TablaSimbolos.Excepcion import Excepcion
 import ply.yacc as yacc
 from AnalizadorLexico import *
@@ -118,6 +118,7 @@ def p_declaracion_normal(t):
                             | RLET ID DOSPUNTOS tipo
                             | RLET ID IGUAL expresion
                             '''
+                            
     if len(t) == 7:
         t[0] = Declaracion_Variables(t[2], t[4], t[6], t.lineno(1), find_column(input, t.slice[1]))
     elif len(t) == 3:
@@ -143,13 +144,13 @@ def p_declaracion_array(t):
                             | RLET ID IGUAL CORIZQ CORDER
                             '''
     if len(t) == 9:
-        t[0] = Declaracion_Array(t[2], t[4], t[7], t.lineno(1), find_column(input, t.slice[1]))
-    elif len(t) == 8:
-        t[0] = Declaracion_Array(t[2], t[4], None, t.lineno(1), find_column(input, t.slice[1]))
-    elif len(t) == 7:
-        t[0] = Declaracion_Array(t[2], 'any', t[5], t.lineno(1), find_column(input, t.slice[1]))
-    else:
-        t[0] = Declaracion_Array(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
+        t[0] = Declaracion_Arrays(t[2], t.lineno(1), find_column(input, t.slice[1]), t[7], t[4])
+    #elif len(t) == 8:
+    #    t[0] = Declaracion_Array(t[2], t[4], None, t.lineno(1), find_column(input, t.slice[1]))
+    #elif len(t) == 7:
+    #    t[0] = Declaracion_Array(t[2], 'any', t[5], t.lineno(1), find_column(input, t.slice[1]))
+    #else:
+    #    t[0] = Declaracion_Array(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
         
 def p_funcion(t):
     '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
@@ -291,15 +292,15 @@ def agregarNativas(ast):
     typeof = Typeof(nombre, parametro, instrucciones, -1,-1)
     ast.setFunciones('typeof',typeof)
 
-    nombre = "uppercase"
+    nombre = "toUpperCase"
     parametro = [{'tipo':'string', 'id':'toUpperCase##Param1'}]
     toUpperCase = ToUpperCase(nombre, parametro, instrucciones,'string', -1,-1, )
-    ast.setFunciones('uppercase',toUpperCase)
+    ast.setFunciones('toUpperCase',toUpperCase)
 
-    nombre = "tolowercase"
-    parametro = [{'tipo':'string', 'id':'toLower##Param1'}]
+    nombre = "toLowerCase"
+    parametro = [{'tipo':'string', 'id':'toLowerCase##Param1'}]
     toLowerCase = ToLowerCase(nombre, parametro, instrucciones,'string', -1,-1)
-    ast.setFunciones('tolowercase',toLowerCase)
+    ast.setFunciones('toLowerCase',toLowerCase)
 
     nombre = "toString"
     parametro = [{'tipo':'any', 'id':'toString##Param1'}]

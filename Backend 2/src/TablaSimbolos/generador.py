@@ -24,7 +24,7 @@ class Generador:
         self.boundError = False
         self.upper = False
         self.lower = False
-        self.potencia = False
+
 
         # Listas de imports
         self.imports = []
@@ -38,6 +38,7 @@ class Generador:
     def cleanAll(self):
         # Contadores
         self.countTemp = 0
+        self.countLabel = 0
 
         # Codigo
         self.codigo = ""
@@ -110,8 +111,7 @@ class Generador:
     def addComment(self, comment):
         self.codeIn(f'/* {comment} */\n')
     
-    def addSpace(self):
-        self.codeIn('\n')
+    
 
     ########################
     # Manejo de Temporales
@@ -163,9 +163,6 @@ class Generador:
     
     def addAsig(self, result, left):
         self.codeIn(f'{result} = {left};\n')
-
-    def addModulo(self, result, left, right):
-        self.codeIn(f'{result} = math.Mod({left}, {right});\n')
 
     ###############
     # FUNCS
@@ -366,7 +363,7 @@ class Generador:
         self.upper = True
         self.inNatives = True
         
-        self.addBeginFunc('uppercase')
+        self.addBeginFunc('toUpperCase')
         
         t1 = self.addTemp()
         t2 = self.addTemp()
@@ -401,62 +398,13 @@ class Generador:
 
         self.inNatives = False
 
-    def fPotencia(self):
-        if self.potencia:
-            return
-        self.potencia = True
-        self.inNatives = True
-        self.addBeginFunc('potencia')
-
-        # Labels a utilizar
-        Lbl0 = self.newLabel()
-        Lbl1 = self.newLabel()
-        Lbl2 = self.newLabel()
-        Lbl3 = self.newLabel()
-
-        # Temporales a utilizar
-        t1 = self.addTemp()
-        t2 = self.addTemp()
-        t3 = self.addTemp()
-        t4 = self.addTemp()
-
-        #Escritura del codigo
-        self.addExp(t2, 'P', '1','+')
-        self.getStack(t1, t2)
-        self.addExp(t3,t1,'','')
-        self.addExp(t4,t1,'','')
-        self.addExp(t2,'P','2','+')
-        self.getStack(t1,t2)
-        self.addIf(t1,'0','==', Lbl1)
-        self.putLabel(Lbl2)
-        self.addIdent()
-        self.addIf(t1, '1','<=',Lbl0)
-        self.addIdent()
-        self.addExp(t3, t3,t4,'*')
-        self.addIdent()
-        self.addExp(t1,t1,'1', '-')
-        self.addIdent()
-        self.addGoto(Lbl2)
-        self.putLabel(Lbl0)
-        self.addIdent()
-        self.setStack('P', t3)
-        self.addIdent()
-        self.addGoto(Lbl3)
-        self.putLabel(Lbl1)
-        self.addIdent()
-        self.setStack('P', '1')
-        self.putLabel(Lbl3)
-        self.addEndFunc()
-        self.addSpace()
-        self.inNatives = False
-
     def fLowerCase(self):
         if self.lower:
             return
         self.lower = True
         self.inNatives = True
         
-        self.addBeginFunc('tolowercase')
+        self.addBeginFunc('toLowerCase')
         
         t1 = self.addTemp()
         t2 = self.addTemp()
@@ -490,4 +438,11 @@ class Generador:
         self.addEndFunc()
 
         self.inNatives = False
+    
+    def addModulo(self, result, left, right):
+        self.codeIn(f'{result} = math.Mod({left}, {right});\n')
+
+    def addPow(self, result, left, right):
+        self.codeIn(f'{result} = math.Pow({left}, {right});\n')
+
 # console.log(4+5*6);

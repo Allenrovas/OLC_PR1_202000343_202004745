@@ -1,7 +1,6 @@
 from ..Abstract.abstract import Abstract
-from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 from ..TablaSimbolos.Excepcion import Excepcion
-
+from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 
 class Return(Abstract):
 

@@ -1,5 +1,5 @@
-from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.generador import Generador
+from ..Abstract.abstract import Abstract
 from ..Abstract.return__ import Return
 
 class Primitivos(Abstract):
@@ -43,9 +43,10 @@ class Primitivos(Abstract):
                 generador.addGoto(self.trueLbl)
             
             ret = Return(self.valor, self.tipo, False)
-            ret.setTrueLbl(self.trueLbl)
-            ret.setFalseLbl(self.falseLbl)
+            ret.trueLbl = self.trueLbl
+            ret.falseLbl = self.falseLbl
             return ret
 
     def getTipo(self):
         return self.tipo
+

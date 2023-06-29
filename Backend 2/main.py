@@ -65,7 +65,10 @@ def Analizador():
     global Tabla
     global Simbolos
     data = request.get_json()
-    entrada = data['entrada']
+    if data is not None:
+        entrada = data['entrada']
+    else:
+        return("Error: No se ha ingresado una entrada")
     Tabla = {}
 
     genAux = Generador()
@@ -154,8 +157,9 @@ def Reportes():
       '''      
             
     auxerrores = []
-    for x in Excepciones:
-        auxerrores.append(x.toString())  
+    if Excepciones is not None:
+        for x in Excepciones:
+            auxerrores.append(x.toString())  
         
         
          

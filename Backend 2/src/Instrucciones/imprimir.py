@@ -1,11 +1,6 @@
-from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
-from typing import Dict, List
-
 from ..TablaSimbolos.generador import Generador
-from ..Abstract.return__ import Return
-
-
+from ..Abstract.abstract import Abstract
 
 class Imprimir(Abstract):
 

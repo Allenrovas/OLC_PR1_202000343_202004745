@@ -1,9 +1,7 @@
-from ..TablaSimbolos.Excepcion import Excepcion
 from ..Abstract.abstract import Abstract
-
+from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.return__ import Return
-
 
 class Relacional_Logica(Abstract):
 
@@ -59,7 +57,6 @@ class Relacional_Logica(Abstract):
                         result.setTrueLbl(self.trueLbl)
                         result.setFalseLbl(self.falseLbl)
                         return result
-                    
                 
 
             generador.addComment("Fin de compilacion de Expresion Relacional")
@@ -95,7 +92,7 @@ class Relacional_Logica(Abstract):
                 if isinstance(lblNot, Excepcion): return lblNot
 
                 if lblNot.getTipo() != 'boolean':
-                    return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.colum)
+                    return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.columna)
                 
                 lbltrue = lblNot.getTrueLbl()
                 lblfalse = lblNot.getFalseLbl()
@@ -109,14 +106,14 @@ class Relacional_Logica(Abstract):
             if isinstance(left, Excepcion): return left
 
             if left.getTipo() != 'boolean':
-                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.colum)
+                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.columna)
 
             generador.putLabel(lblAndOr)
             right = self.op_der.interpretar( arbol, tabla)
             if isinstance(right, Excepcion): return right
 
             if right.getTipo() != 'boolean':
-                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.colum)
+                return Excepcion("Semantico", "No se puede utilizar la expresion booleana en: ", self.fila, self.columna)
             
             generador.addComment("Fin de compilacion de Expresion Logica")
             generador.addSpace()
@@ -136,6 +133,9 @@ class Relacional_Logica(Abstract):
 
     def getTipo(self):
         return self.tipo
+    
+    def setTipo(self, tipo):
+        self.tipo = tipo
 
     def getNum(self):
         if self.op == '===':

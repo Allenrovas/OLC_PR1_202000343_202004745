@@ -8,6 +8,7 @@ class Arbol:
         self.consola = ""
         self.tsglobal = None
         self.tsgInterpretada = {}
+
     
     # Hacer los getters y setters de cada atributo
 

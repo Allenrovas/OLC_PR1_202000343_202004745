@@ -8,7 +8,7 @@ class Return:
         self.isTemp = isTemp
         self.trueLbl = ''
         self.falseLbl = ''
-
+    
     def getValue(self):
         return self.value
     def getTipo(self):

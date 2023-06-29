@@ -1,13 +1,10 @@
-from ..TablaSimbolos.Simbolo import Simbolo
-from ..Abstract.abstract import Abstract
-from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
-from ..TablaSimbolos.Excepcion import Excepcion
-
-from ..TablaSimbolos.generador import Generador
-from ..Abstract.return__ import Return as Return2
+from typing import List
 from ..Instrucciones._return import Return
-
-
+from ..Abstract.return__ import Return as Return2
+from ..TablaSimbolos.generador import Generador
+from ..Abstract.abstract import Abstract
+from ..TablaSimbolos.Excepcion import Excepcion
+from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 
 
 class Llamada_Funcion(Abstract):
@@ -68,7 +65,7 @@ class Llamada_Funcion(Abstract):
             generador.addSpace()
 
             if funcion.getTipo() != 'boolean':
-                return Return(temp, funcion.getTipo(), True)
+                return Return2(temp, funcion.getTipo(), True)
             else:
                 generador.addComment('Recuperacion de booleano')
                 if self.trueLbl == '':
@@ -108,8 +105,8 @@ class Llamada_Funcion(Abstract):
             generator.fTrunc()
         elif self.nombre == 'float':
             generator.fFloat()
-        elif self.nombre == 'uppercase':
+        elif self.nombre == 'toUpperCase':
             generator.fUpperCase()
-        elif self.nombre == 'tolowercase':
+        elif self.nombre == 'toLowerCase':
             generator.fLowerCase()
         return

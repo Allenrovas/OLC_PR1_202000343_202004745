@@ -11,7 +11,7 @@ class Simbolo():
         self.length = 0
         self.referencia = False
         self.params = None
-
+    
     def getTipo(self):
         return self.type
     def getId(self):
@@ -20,13 +20,13 @@ class Simbolo():
         return self.pos
     def getInHeap(self):
         return self.inHeap
-
+    
     def getParams(self):
         return self.params
-
+    
     def setParams(self, params):
         self.params = params
-
+    
     def setTipo(self, tipo):
         self.type = tipo
     def setId(self, id):
@@ -35,7 +35,7 @@ class Simbolo():
         self.pos = pos
     def setInHeap(self, value):
         self.inHeap = value
-
+    
     def setTipoAux(self, tipo):
         self.tipoAux = tipo
 
@@ -49,10 +49,10 @@ class Simbolo():
 
     def setReferencia(self, ref):
         self.referencia = ref
-
+        
     def getReferencia(self):
         return self.referencia
-
+    
     def getValue(self):
         return self.value
     def setValue(self, value):
