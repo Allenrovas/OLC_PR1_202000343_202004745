@@ -71,21 +71,37 @@ class If(Abstract):
                     if isinstance(result, Excepcion):
                         arbol.setExcepciones(result)
                     if isinstance(result, Return):
-                        generador.addComment('Resultado a retornar en la funcion')
-                        if result.getTrueLbl() == '':
-                            generador.setStack('P', result.getValor())
-                            generador.addGoto(entorno.returnLbl)
+                        if entorno.returnLbl != '':
+                            generador.addComment('Resultado a retornar en la funcion')
+                            if result.getTrueLbl() == '':
+                                generador.setStack('P', result.getValor())
+                                generador.addGoto(entorno.returnLbl)
+                                generador.addComment('Fin del resultado a retornar en la funcion')
+                            else:
+                                generador.putLabel(result.getTrueLbl())
+                                generador.setStack('P', '1')
+                                generador.addGoto(entorno.returnLbl)
+                                generador.putLabel(result.getFalseLbl())
+                                generador.setStack('P', '0')
+                                generador.addGoto(entorno.returnLbl)
                             generador.addComment('Fin del resultado a retornar en la funcion')
-                        else:
-                            generador.putLabel(result.getTrueLbl())
-                            generador.setStack('P', '1')
-                            generador.addGoto(entorno.returnLbl)
-                            generador.putLabel(result.getFalseLbl())
-                            generador.setStack('P', '0')
-                            generador.addGoto(entorno.returnLbl)
-                        generador.addComment('Fin del resultado a retornar en la funcion')
             elif self.bloqueElseif != None:
                 result = self.bloqueElseif.interpretar(arbol, tabla)
                 if isinstance(result, Excepcion): return result
+                if isinstance(result, Return):
+                        if entorno.returnLbl != '':
+                            generador.addComment('Resultado a retornar en la funcion')
+                            if result.getTrueLbl() == '':
+                                generador.setStack('P', result.getValor())
+                                generador.addGoto(entorno.returnLbl)
+                                generador.addComment('Fin del resultado a retornar en la funcion')
+                            else:
+                                generador.putLabel(result.getTrueLbl())
+                                generador.setStack('P', '1')
+                                generador.addGoto(entorno.returnLbl)
+                                generador.putLabel(result.getFalseLbl())
+                                generador.setStack('P', '0')
+                                generador.addGoto(entorno.returnLbl)
+                            generador.addComment('Fin del resultado a retornar en la funcion')
             generador.putLabel(salir)
         generador.addComment('Fin de la compilacion de un if')
