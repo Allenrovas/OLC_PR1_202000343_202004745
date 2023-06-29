@@ -1,7 +1,6 @@
  #Precedencia para las operaciones
 from src.Instrucciones.Dec_Array import Declaracion_Arrays
 from src.Expresiones.identificador import Identificador
-from src.TablaSimbolos.arbol import Arbol
 from src.TablaSimbolos.Excepcion import Excepcion
 import ply.yacc as yacc
 from AnalizadorLexico import *
@@ -9,7 +8,6 @@ from src.Expresiones.aritmetica import Aritmetica
 from src.Expresiones.primitivos import Primitivos
 from src.Instrucciones.imprimir import Imprimir
 from src.Instrucciones.declaraciones import Declaracion_Variables
-from src.TablaSimbolos.TablaSimbolos import TablaSimbolos
 from src.Instrucciones.condicional_if import If
 from src.Expresiones.relacional_logica import Relacional_Logica
 from src.Instrucciones.ciclo_for import For
@@ -18,7 +16,6 @@ from src.Instrucciones.Break import Break
 from src.Instrucciones.Continue import Continue
 from src.Instrucciones.llamada_funcion import Llamada_Funcion
 from src.Instrucciones.funcion import Funcion
-from src.Instrucciones.Asignacion import Asignacion
 from src.Instrucciones.ciclo_while import While
 from src.Nativas.toString import String
 from src.Nativas.toLowerCase import ToLowerCase
@@ -29,7 +26,6 @@ from src.Nativas.toExponential import ToExponential
 from src.Instrucciones.Struct import Dec_Struct
 from src.Expresiones.struct import Struct
 import sys
-from src.TablaSimbolos.generador import Generador
 sys.setrecursionlimit(10000000)
 
 erroressintacticos = []

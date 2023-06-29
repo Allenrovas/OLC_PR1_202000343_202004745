@@ -4,11 +4,12 @@ import json
 from AnalizadorSintactico import *
 from AnalizadorLexico import *
 from src.TablaSimbolos.generador import Generador
-from src.Instrucciones.funcion import Funcion
 from src.TablaSimbolos.Excepcion import Excepcion
 from src.Instrucciones._return import Return
 from src.Instrucciones.Break import Break
 from src.Instrucciones.Continue import Continue
+from src.TablaSimbolos.TablaSimbolos import TablaSimbolos
+from src.TablaSimbolos.arbol import Arbol
 from typing import Dict, List
 from flask_cors import CORS
 import sys
