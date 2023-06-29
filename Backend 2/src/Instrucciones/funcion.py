@@ -1,5 +1,6 @@
 from typing import List
-from ..Instrucciones._return import Return
+from ..Instrucciones._return import Return as Return2
+from ..Abstract.return__ import *
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
@@ -7,12 +8,12 @@ from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
 
 class Funcion(Abstract):
 
-    def __init__(self, nombre, parametros, instrucciones, fila, columna):
+    def __init__(self, nombre, parametros, instrucciones, fila, columna, tipo = None):
         self.nombre = nombre
         self.parametros = parametros
         self.instrucciones = instrucciones
-        self.tipo = 'string'
         self.recTemp = True
+        self.tipo = 'number'
         super().__init__(fila, columna)
     
 
@@ -52,7 +53,7 @@ class Funcion(Abstract):
             value = instruccion.interpretar(arbol, entorno)
             if isinstance(value, Excepcion):
                 arbol.setExcepcion(value)
-            if isinstance(value, Return):
+            if isinstance(value, Return2):
                 if value.getTrueLbl() == '':
                     generador.addComment('Resultado a retornar en la funcion')
                     generador.setStack('P',value.getValor())

@@ -1,5 +1,5 @@
 from ..Abstract.abstract import Abstract
-from ..TablaSimbolos.Simbolo import Simbolo
+from ..TablaSimbolos.simbolo import Simbolo
 from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.return__ import Return

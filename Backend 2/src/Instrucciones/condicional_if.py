@@ -1,9 +1,10 @@
 from typing import List
-from ..Instrucciones._return import Return
+from ..Instrucciones._return import Return as Return2
 from ..TablaSimbolos.generador import Generador
 from ..Abstract.abstract import Abstract
 from ..TablaSimbolos.Excepcion import Excepcion
 from ..TablaSimbolos.TablaSimbolos import TablaSimbolos
+from ..Abstract.return__ import *
 
 class If(Abstract):
 
@@ -41,7 +42,7 @@ class If(Abstract):
                 #         generador.putLabel(result.getLbl())
                 #         generador.putLabel(salir)
                 #         return Excepcion("Semantico", "Sentencia break fuera de ciclo", self.fila, self.columna)
-                if isinstance(result, Return):
+                if isinstance(result, Return2):
                     if entorno.returnLbl != '':
                         generador.addComment('Resultado a retornar en la funcion')
                         if result.getTrueLbl() == '':
@@ -70,7 +71,7 @@ class If(Abstract):
                     result = instruccion.interpretar(arbol, entorno)
                     if isinstance(result, Excepcion):
                         arbol.setExcepciones(result)
-                    if isinstance(result, Return):
+                    if isinstance(result, Return2):
                         if entorno.returnLbl != '':
                             generador.addComment('Resultado a retornar en la funcion')
                             if result.getTrueLbl() == '':
@@ -88,20 +89,20 @@ class If(Abstract):
             elif self.bloqueElseif != None:
                 result = self.bloqueElseif.interpretar(arbol, tabla)
                 if isinstance(result, Excepcion): return result
-                if isinstance(result, Return):
-                        if entorno.returnLbl != '':
-                            generador.addComment('Resultado a retornar en la funcion')
-                            if result.getTrueLbl() == '':
-                                generador.setStack('P', result.getValor())
-                                generador.addGoto(entorno.returnLbl)
-                                generador.addComment('Fin del resultado a retornar en la funcion')
-                            else:
-                                generador.putLabel(result.getTrueLbl())
-                                generador.setStack('P', '1')
-                                generador.addGoto(entorno.returnLbl)
-                                generador.putLabel(result.getFalseLbl())
-                                generador.setStack('P', '0')
-                                generador.addGoto(entorno.returnLbl)
+                if isinstance(result, Return2):
+                    if entorno.returnLbl != '':
+                        generador.addComment('Resultado a retornar en la funcion')
+                        if result.getTrueLbl() == '':
+                            generador.setStack('P', result.getValor())
+                            generador.addGoto(entorno.returnLbl)
                             generador.addComment('Fin del resultado a retornar en la funcion')
+                        else:
+                            generador.putLabel(result.getTrueLbl())
+                            generador.setStack('P', '1')
+                            generador.addGoto(entorno.returnLbl)
+                            generador.putLabel(result.getFalseLbl())
+                            generador.setStack('P', '0')
+                            generador.addGoto(entorno.returnLbl)
+                        generador.addComment('Fin del resultado a retornar en la funcion')
             generador.putLabel(salir)
         generador.addComment('Fin de la compilacion de un if')

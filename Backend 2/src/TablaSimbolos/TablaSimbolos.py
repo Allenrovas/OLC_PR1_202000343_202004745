@@ -1,5 +1,5 @@
 from ..TablaSimbolos.Excepcion import Excepcion
-from ..TablaSimbolos.Simbolo import Simbolo
+from ..TablaSimbolos.simbolo import Simbolo
 class TablaSimbolos:
 
     def __init__(self, anterior = None):

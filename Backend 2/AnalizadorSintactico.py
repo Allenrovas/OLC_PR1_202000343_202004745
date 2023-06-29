@@ -2,7 +2,7 @@
 from src.Instrucciones.Dec_Array import Declaracion_Arrays
 from src.Instrucciones.AsignacionStruct import AsignacionStruct
 from src.Expresiones.identificador import Identificador
-from src.TablaSimbolos.Arbol import Arbol
+from src.TablaSimbolos.arbol import Arbol
 from src.TablaSimbolos.Excepcion import Excepcion
 import ply.yacc as yacc
 from AnalizadorLexico import *
@@ -153,12 +153,20 @@ def p_declaracion_array(t):
     #    t[0] = Declaracion_Array(t[2], 'any', None, t.lineno(1), find_column(input, t.slice[1]))
         
 def p_funcion(t):
-    '''funcion : RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
-               | RFUNCTION ID PARIZQ parametros PARDER LLAVEIZQ instrucciones LLAVEDER'''
-    if len(t) == 8:
-        t[0] = Funcion(t[2],None,t[6], t.lineno(1), find_column(input, t.slice[1]))
-    else:
-        t[0] = Funcion(t[2], t[4], t[7], t.lineno(1), find_column(input, t.slice[1]))
+    '''funcion : RFUNCTION ID PARIZQ PARDER DOSPUNTOS tipo LLAVEIZQ instrucciones LLAVEDER
+               | RFUNCTION ID PARIZQ parametros PARDER DOSPUNTOS tipo LLAVEIZQ instrucciones LLAVEDER
+               | RFUNCTION ID PARIZQ PARDER LLAVEIZQ instrucciones LLAVEDER
+               | RFUNCTION ID PARIZQ parametros PARDER LLAVEIZQ instrucciones LLAVEDER
+               '''
+    if len(t) == 9:
+        if t[4] == ')':
+            t[0] = Funcion(t[2],None,t[8], t.lineno(1), find_column(input, t.slice[1]), t[6])
+        else:
+            t[0] = Funcion(t[2], t[4], t[7], t.lineno(1), find_column(input, t.slice[1]), None)
+    elif len(t) == 11:
+        t[0] = Funcion(t[2], t[4], t[9], t.lineno(1), find_column(input, t.slice[1]), t[7])
+    elif len(t) == 8:
+        t[0] = Funcion(t[2], None, t[6], t.lineno(1), find_column(input, t.slice[1]), None)
 
 def p_llamada_funcion(t):
     '''llamada_funcion : ID PARIZQ PARDER
