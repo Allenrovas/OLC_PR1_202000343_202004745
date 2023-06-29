@@ -1,6 +1,5 @@
  #Precedencia para las operaciones
 from src.Instrucciones.Dec_Array import Declaracion_Arrays
-from src.Instrucciones.AsignacionStruct import AsignacionStruct
 from src.Expresiones.identificador import Identificador
 from src.TablaSimbolos.arbol import Arbol
 from src.TablaSimbolos.Excepcion import Excepcion
