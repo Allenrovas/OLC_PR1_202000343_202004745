@@ -134,7 +134,7 @@ def p_struct(t):
 
 def p_asignacion_struct(t):
     'asignacion_struct : ID PUNTO parametros_asignacion_struct IGUAL expresion'
-    t[0] = AsignacionStruct(t[1], t[3], t[5], t.lineno(1), find_column(input, t.slice[1]))
+    #t[0] = AsignacionStruct(t[1], t[3], t[5], t.lineno(1), find_column(input, t.slice[1]))
 
 def p_declaracion_array(t):
     '''declaracion_array : RLET ID DOSPUNTOS tipo IGUAL CORIZQ parametros_llamada CORDER
